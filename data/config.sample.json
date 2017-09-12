@@ -1,0 +1,7 @@
+{
+  "README": "copy this file to no-git as config.json",
+  "clientId": "<BOT CLIENT ID>",
+  "guildId": "<SERVER ID>",
+  "botId": "<BOT USER ID>",
+  "mainChat": "<NAME OF MAIN CHANNEL>"
+}
