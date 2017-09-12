@@ -1,0 +1,31 @@
+{
+  "name": "azubot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "azubot.js",
+  "engines": {
+    "node": "6.1.0"
+  },
+  "dependencies": {
+    "chance": "^1.0.4",
+    "discord.js": "^11.0.0",
+    "forever": "^0.15.3",
+    "fs": "0.0.1-security",
+    "glob": "^7.1.2",
+    "js-beautify": "^1.6.14",
+    "moment-timezone": "^0.5.11",
+    "node-emoji": "^1.5.1",
+    "node-trello": "^1.2.1",
+    "request": "^2.79.0",
+    "trello": "^0.7.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "forever start ./azubot.js",
+    "stop": "forever stop azubot.js",
+    "restart": "forever restart azubot.js",
+	"beautify": "node ./beautify.js"
+  },
+  "author": "Kristen Trzonkowski",
+  "license": "ISC"
+}
