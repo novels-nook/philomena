@@ -201,11 +201,11 @@ module.exports = function(bot) {
 
     // do this smarter
 	soul: function (file) {
-      return this.getFromCache('soul', file);
+      return bot.helpers.getFromCache('soul', file);
 	},
 
     data: function(file) {
-      return this.getFromCache('data', file);
+      return bot.helpers.getFromCache('data', file);
     },
 
 	getFromCache: function (type, file) {
