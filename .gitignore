@@ -4,3 +4,4 @@
 /timers/*
 /node_modules
 .discordjs
+!**/README.md
