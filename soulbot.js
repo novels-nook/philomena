@@ -74,8 +74,12 @@ var AzuBot = new function() {
 
     bot.client.on("guildMemberAdd", function(user) {
       setTimeout(function() {
-          bot.server.channels.find("name", "general-chat").sendMessage("I spy with my little eye... somepony new to the Q&B Discord server!  Everypony say hello to " + user.toString() + "!  Once you get flagged as a Cadet, PM me #commands for a list of the fun things I can do.  If you haven't, don't forget to read the rules: <http://quillnblade.com/discord-app>");
-          user.sendMessage("Welcome to the Q&B server!  I am the official Automated Pony Relations Pony, Azurite!  You can use the command ``#commands`` to see a list of everything I can do.  Be sure you read the rules, especially the part about how to become a Cadet!  <http://quillnblade.com/discord-app>");
+	      if (bot.config.announceNewUsers) {
+            bot.server.channels.find("name", bot.config.mainChat).send(bot.soul("newUserGreeting").serverMessage.replace("{newUser}", user.toString()));
+		  }
+          if (bot.config.greetNewUsersPersonally) {
+            user.sendMessage(bot.soul("newUserGreeting").userMessage);
+		  }
         },
         2500
       );
@@ -110,7 +114,7 @@ var AzuBot = new function() {
         } else if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
           bot.helpers.isNobody(message.author.id).then(function(user) {
             if (bot.pings[message.channel.id] >= Date.now() - 500) {
-              message.reply("Whoa!  Hold on, I'm a little overloaded at the moment.  Try again in a sec, 'kay?");
+              message.reply("Whoa!  Hold on, I'm a little overloaded at the moment.  Try again in a sec!!\nhttps://i.imgur.com/ciCUOiM.png");
               return false;
             }
 
@@ -118,7 +122,16 @@ var AzuBot = new function() {
 
             for (var c = 0, clen = bot.commands.length; c < clen; c++) {
               for (var p = 0, plen = bot.commands[c].prompts.length; p < plen; p++) {
-                var prompt = new RegExp("\\b" + bot.commands[c].prompts[p].replace(/\s/g, "\\s?") + "\\b", "gi");
+			    var prompt = bot.commands[c].prompts[p].replace(/\s/g, "\\s?") + "\\b";
+
+				if (prompt[0] == bot.config.promptCharacter) {
+				  prompt[0] = bot.config.promptCharacter + "\\b";
+				}
+				else {
+                  prompt = "\\b" + prompt;
+				}
+
+                var prompt = new RegExp(prompt, "gi");
 
                 if (message.content.match(prompt) && bot.helpers.isChannel(message.channel, bot.commands[c].channels) && bot.helpers.hasPermission(message.author.id, bot.commands[c].role)) {
                   var args = message.content.split(prompt).pop().trim();
