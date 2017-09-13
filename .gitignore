@@ -1,3 +1,6 @@
 **/no-git
+/data
+/functions
+/timers
 /node_modules
 .discordjs
