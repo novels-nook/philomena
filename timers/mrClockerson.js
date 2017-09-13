@@ -1,5 +1,5 @@
 var emoji = require('node-emoji'),
-    moment = require("moment-timezone");
+  moment = require("moment-timezone");
 
 module.exports = {
   execute: function(bot) {

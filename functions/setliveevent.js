@@ -19,7 +19,7 @@ module.exports = {
     var d = moment(args).tz("America/New_York");
 
     bot.data("no-git/persist");
-	bot.cache['no-git/persist'].liveEvent = d.valueOf();
+    bot.cache['no-git/persist'].liveEvent = d.valueOf();
     bot.helpers.updateData("no-git/persist");
 
     message.channel.sendMessage("Okay!  I will tell everypony that the next live event is at " + d.format('Do MMMM YYYY H:mm z') + ".");
