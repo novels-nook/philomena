@@ -136,10 +136,7 @@ var AzuBot = new function() {
               }
             }
 
-            delete require.cache[require.resolve("./functions/respondToMessage.js")];
-            theFunction = require("./functions/respondToMessage.js");
-
-            theFunction.execute(bot, message, message);
+            bot.helpers.basicResponse(message);
           }).catch(function(err) {
             console.log(err);
           });
