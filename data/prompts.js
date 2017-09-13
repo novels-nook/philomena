@@ -1,5 +1,5 @@
 var Chance = require("chance"),
-    chance = new Chance();
+  chance = new Chance();
 
 module.exports = {
   check: function(message, bot) {
@@ -91,16 +91,16 @@ module.exports = {
     }
     if (bot.helpers.containsKeyword(message.content, "Boop")) {
       var boopedResponse = ["How dare you!", "I'm telling Sunny!", "I'm telling Soarin!", "*giggles*", "Tee hee.", "That will be 10 bits, please.", "Is that the kind of pony you are? An unsolicited booper?", "Help! Help! I need an pondult.", "Aww... you're silly.", "Mr. Peepers likes boops too!", "*sneezes*", "This won't get you extra points in the QnB RPG.", "*flops over*", "*stares blankly*", "*hides*", "*boops back*", "Careful, Pink Pony gets *very* jealous!", "Look, we can sit here all day and boop but shouldn't you be writing or something?", "Are you just going to boop me or are you going to help get my kite down?", "Cookie now please!"],
-          boops = bot.data('no-git/persist').boops,
-		  today = currentTime.getDate() + "" + currentTime.getMonth() + "" + currentTime.getFullYear();
+        boops = bot.data('no-git/persist').boops,
+        today = currentTime.getDate() + "" + currentTime.getMonth() + "" + currentTime.getFullYear();
 
       if (!bot.data('no-git/persist').boops || bot.data('no-git/persist').boops.date != today) {
-	    bot.cache['no-git/persist'].boops = {
-          date : today,
-		  total : 0,
-		  boopers : {}
-		};
-	  }
+        bot.cache['no-git/persist'].boops = {
+          date: today,
+          total: 0,
+          boopers: {}
+        };
+      }
 
       if (!bot.data('no-git/persist').boops.boopers[message.author.id]) {
         bot.cache['no-git/persist'].boops.boopers[message.author.id] = 0;
@@ -108,8 +108,7 @@ module.exports = {
 
       if (bot.helpers.containsKeyword(message.content, "How many boops")) {
         message.channel.sendMessage("I was booped " + bot.data('no-git/persist').boops.total + " times today." + ((bot.data('no-git/persist').boops.total == 0) ? " Which isn't bad." : " My nose is sore!"));
-      }
-	  else if (bot.helpers.containsKeyword(message.content, "Who boops")) {
+      } else if (bot.helpers.containsKeyword(message.content, "Who boops")) {
         var biggestBooper = [0, 0];
         var smallestBooper = [0, 0];
 
@@ -135,7 +134,7 @@ module.exports = {
         var boopedAnnoyed = ["Ha ha ha, you're so cute.", "Please don't do that anymore.", "Sunny, help a fun-sized pony out here!", "If you boop me again, I'm turning this cart around.", "Come on, be a pal and quit it?", "It was only cute the first 15 times."];
         bot.cache['no-git/persist'].boops.total++;
         bot.cache['no-git/persist'].boops.boopers[message.author.id]++;
-	
+
         if (bot.data('no-git/persist').boops.total >= 20 && chance.rpg("1d4") >= 2) {
           message.channel.sendMessage(chance.pickone(boopedPissed));
         } else if (bot.data('no-git/persist').boops.total >= 10 && chance.rpg("1d6") <= 2) {

@@ -3,6 +3,8 @@ var beautify = require('js-beautify').js_beautify,
 	fs = require('fs');
 
 glob('./+(data|functions|helpers|timers)/**/*.js?(on)', function (err, files) {
+  files.push('./azubot.js');
+
   for (var i = 0, len = files.length; i < len; i++) {
     console.log('Beautifying ' + files[i]);
 
