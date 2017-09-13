@@ -14,7 +14,7 @@ var AzuBot = new function() {
   this.commands = [];
   this.helpers = {};
   this.pings = {};
-  this.config = JSON.parse(fs.readFileSync("./data/no-git/config.json"));
+  this.config = JSON.parse(fs.readFileSync("./data/config.json"));
 
   this.run = function() {
     var bot = this;
