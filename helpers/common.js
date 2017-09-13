@@ -12,6 +12,22 @@ module.exports = function(bot) {
 
     days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 
+    basicResponse: function (message) {
+      var responseList = bot.soul('basicResponses');
+
+      if (bot.soul('userResponses')[message.author.id]) {
+        responseList = responseList.concat(bot.soul('userResponses')[message.author.id]);
+      }
+
+      for (var group in bot.soul('groupResponses')) {
+        if (bot.helpers.memberHasRole(message.author.id, group)) {
+          responseList = responseList.concat(bot.soul('groupResponses')[group]);
+        }
+      }
+
+      message.channel.send(chance.pickone(responseList));
+	},
+
     containsKeyword: function(string, keyword) {
       if (Array.isArray(keyword)) {
         for (var i = 0, len = keyword.length; i < len; i++) {
