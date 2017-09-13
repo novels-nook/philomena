@@ -54,8 +54,9 @@ var AzuBot = new function() {
                 break;
             }
 
-            // Shortcut the data helpers function
+            // Shortcut the data & soul helpers function
             bot.data = bot.helpers.data;
+			bot.soul = bot.helpers.soul;
 
             // Clear memory
             delete require.cache[require.resolve(path)];
@@ -117,7 +118,7 @@ var AzuBot = new function() {
 
             for (var c = 0, clen = bot.commands.length; c < clen; c++) {
               for (var p = 0, plen = bot.commands[c].prompts.length; p < plen; p++) {
-                var prompt = new RegExp(bot.commands[c].prompts[p].replace(/\s/g, "\\s?"), "gi");
+                var prompt = new RegExp("\\b" + bot.commands[c].prompts[p].replace(/\s/g, "\\s?") + "\\b", "gi");
 
                 if (message.content.match(prompt) && bot.helpers.isChannel(message.channel, bot.commands[c].channels) && bot.helpers.hasPermission(message.author.id, bot.commands[c].role)) {
                   var args = message.content.split(prompt).pop().trim();
