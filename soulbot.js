@@ -134,16 +134,7 @@ var AzuBot = new function() {
 
             for (var c = 0, clen = bot.commands.length; c < clen; c++) {
               for (var p = 0, plen = bot.commands[c].prompts.length; p < plen; p++) {
-			    var prompt = bot.commands[c].prompts[p].replace(/\s/g, "\\s?") + "\\b";
-
-				if (prompt[0] == bot.config.promptCharacter) {
-				  prompt[0] = bot.config.promptCharacter + "\\b";
-				}
-				else {
-                  prompt = "\\b" + prompt;
-				}
-
-                var prompt = new RegExp(prompt, "gi");
+			    var prompt = new RegExp(bot.commands[c].prompts[p].trim().replace(/^([^A-Z0-9])?([A-Z0-9_])([^A-Z0-9])?$/gi, "$1\\b$2\\b$3").replace(/\s/g, "\\s?"), "gi");
 
                 if (message.content.match(prompt) && bot.helpers.isChannel(message.channel, bot.commands[c].channels) && bot.helpers.hasPermission(message.author.id, bot.commands[c].role)) {
                   var args = message.content.split(prompt).pop().trim();
