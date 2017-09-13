@@ -2,6 +2,7 @@
 /data/*
 /functions/*
 /timers/*
+/soul/*
 /node_modules
 .discordjs
 !**/README.md

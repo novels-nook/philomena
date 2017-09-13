@@ -14,15 +14,7 @@ module.exports = {
   execute: function(bot, args, message) {
     var storyId = 0,
       keywords = {
-        'wishes': 230097,
-        'hopes': 281842,
-        'memoirs': 230095,
-        'secrets': 262566,
-        'trials': 301607,
-        'veil': 329741,
-        'beyond the veil': 329741,
-        'blood moon': 373983,
-        'glow': 350834
+        'example': 12345,
       };
 
     if (!isNaN(parseFloat(args))) {
@@ -36,7 +28,7 @@ module.exports = {
         url: "https://www.fimfiction.net/api/v2/stories?sort=-relevance&" + (storyId != 0 ? 'filter[ids]=' + storyId : 'query=' + args),
         headers: {
           "User-Agent": "AzuBOT/1.0",
-          "Authorization": "Bearer <FIMFICTION_API_KEY>"
+          "Authorization": "Bearer " + bot.config.fimfictionAccessKey
         }
       }, function(response) {
         if (!response.data || response.data.length == 0) {

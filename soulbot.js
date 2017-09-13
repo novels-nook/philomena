@@ -22,7 +22,7 @@ var AzuBot = new function() {
     bot.client.login(bot.config.clientId);
 
     bot.client.on("ready", function() {
-      console.log("AzuBOT is ready!");
+      console.log("SoulBOT is ready!");
 
       bot.server = bot.client.guilds.get(bot.config.guildId);
 
@@ -53,6 +53,18 @@ var AzuBot = new function() {
                 file.execute(bot);
                 break;
             }
+
+            bot.commands.sort(function (a, b) {
+              if (a.priority && b.priority) {
+                return a.priority > b.priority ? -1 : 1;
+              }
+              else if (a.priority) {
+                return -1;
+              }
+              else {
+                return 1;
+              }
+            });
 
             // Shortcut the data & soul helpers function
             bot.data = bot.helpers.data;
@@ -94,7 +106,7 @@ var AzuBot = new function() {
       if (!bot.helpers.isBot(message.author.id)) {
         var isDeviantArtLink = message.content.match("(http(s)?:\/\/.*.deviantart.com\/art\/[^ ]+)");
 
-        if (isDeviantArtLink) {
+        if (isDeviantArtLink && bot.config.previewDeviantArt) {
           bot.helpers.getMETA(isDeviantArtLink[0], function(meta) {
             var responseList = [
               "Oh!  Let me get that for you!",

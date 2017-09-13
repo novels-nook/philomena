@@ -248,11 +248,19 @@ module.exports = function(bot) {
       return output;
 	},
 
-    updateData: function(key) {
-      var data = JSON.stringify(bot.cache[key]);
+    updateSoul: function (file) {
+      bot.helpers.updateFromCache('soul', file);
+    },
+
+    updateData: function(file) {
+      bot.helpers.updateFromCache('data', file);
+    },
+
+    updateFromCache: function (type, file) {
+      var data = JSON.stringify(bot.cache[file]);
 
       if (data) {
-        fs.writeFile("data/" + key + ".json", data, {
+        fs.writeFile(type + "/" + file + ".json", data, {
           flag: 'w'
         }, function() {});
       }
