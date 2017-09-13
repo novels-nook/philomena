@@ -199,29 +199,38 @@ module.exports = function(bot) {
       return false;
     },
 
-    data: function(data) {
-      if (!bot.cache[data]) {
-        var json = fs.readFileSync("data/" + data + ".json");
+    // do this smarter
+	soul: function (file) {
+      return this.getFromCache('soul', file);
+	},
+
+    data: function(file) {
+      return this.getFromCache('data', file);
+    },
+
+	getFromCache: function (type, file) {
+      if (!bot.cache[file]) {
+        var json = fs.readFileSync(type + "/" + file + ".json");
 
         try {
-          bot.cache[data] = JSON.parse(json);
+          bot.cache[file] = JSON.parse(json);
         } catch (err) {
-          console.log("There has been an error parsing " + data + ".json", err);
+          console.log("There has been an error parsing " + type + "/" + file + ".json", err);
         }
       }
 
       var output = [];
 
-      for (var key in bot.cache[data]) {
-        if ((!!bot.cache[data][key]) && (bot.cache[data][key].constructor === Object)) {
-          output[key] = Object.assign({}, bot.cache[data][key]);
+      for (var key in bot.cache[file]) {
+        if ((!!bot.cache[file][key]) && (bot.cache[file][key].constructor === Object)) {
+          output[key] = Object.assign({}, bot.cache[file][key]);
         } else {
-          output[key] = bot.cache[data][key];
+          output[key] = bot.cache[file][key];
         }
       }
 
       return output;
-    },
+	},
 
     updateData: function(key) {
       var data = JSON.stringify(bot.cache[key]);

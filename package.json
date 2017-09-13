@@ -1,8 +1,8 @@
 {
-  "name": "azubot",
+  "name": "soulbot",
   "version": "1.0.0",
   "description": "",
-  "main": "azubot.js",
+  "main": "soulbot.js",
   "engines": {
     "node": "6.1.0"
   },
@@ -21,9 +21,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "forever start ./azubot.js",
-    "stop": "forever stop azubot.js",
-    "restart": "forever restart azubot.js",
+    "start": "forever start ./soulbot.js",
+    "stop": "forever stop soulbot.js",
+    "restart": "forever restart soulbot.js",
 	"beautify": "node ./beautify.js"
   },
   "author": "Kristen Trzonkowski",
