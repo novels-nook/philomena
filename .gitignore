@@ -1,7 +1,9 @@
+**/no-git
 /data/*
 /functions/*
 /timers/*
 /soul/*
 /node_modules
+npm-debug.log
 .discordjs
 !**/README.md
