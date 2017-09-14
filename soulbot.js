@@ -8,7 +8,6 @@ var Discord = require("discord.js"),
 
 var AzuBot = new function() {
   this.client = new Discord.Client();
-
   this.connected = false;
   this.cache = [];
   this.commands = [];
@@ -22,7 +21,11 @@ var AzuBot = new function() {
     bot.client.login(bot.config.clientId);
 
     bot.client.on("ready", function() {
-      console.log("SoulBOT is ready!");
+      console.log("Logged in with username: " + bot.client.user.username + ".");
+      console.log("Logged in with ID: " + bot.client.user.id + ".");
+      console.log("No matter who I am logged in as, I am still SoulBot at heart.")
+      console.log("Currently connected to:")
+      bot.client.guilds.map(server => server.name).forEach(function(item) {console.log("  - " + item);})
 
       bot.server = bot.client.guilds.get(bot.config.guildId);
 
@@ -109,7 +112,7 @@ var AzuBot = new function() {
         if (isDeviantArtLink && bot.config.previewDeviantArt) {
           bot.helpers.getMETA(isDeviantArtLink[0], function(meta) {
             var responseList = [
-              "Oh!  Let me get that for you!",
+              "Oh! Let me get that for you!",
               "Wow, you found a great one!",
               "Here you go!",
               "Look at this!",
@@ -126,7 +129,7 @@ var AzuBot = new function() {
         } else if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
           bot.helpers.isNobody(message.author.id).then(function(user) {
             if (bot.pings[message.channel.id] >= Date.now() - 500) {
-              message.reply("Whoa!  Hold on, I'm a little overloaded at the moment.  Try again in a sec!!\nhttps://i.imgur.com/ciCUOiM.png");
+              message.reply("Whoa! Hold on, I'm a little overloaded at the moment. Try again in a sec!!\nhttps://i.imgur.com/ciCUOiM.png");
               return false;
             }
 
