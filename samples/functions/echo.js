@@ -5,7 +5,7 @@ module.exports = {
     "prompts": [
       "#echo"
     ],
-    "role": "Royal Guards",
+    "role": "Moderators",
     "group": "Mod Tools",
     "channels": [
       "mod-chat",

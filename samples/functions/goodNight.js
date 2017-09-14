@@ -8,7 +8,7 @@ module.exports = {
     "prompts": [
       "good night"
     ],
-    "role": "Cadets",
+    "role": "All",
     "channels": [
       "All"
     ]

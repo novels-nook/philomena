@@ -1,11 +1,11 @@
 module.exports = {
   command: {
-    "name": "story <storyID|keyword>",
+    "name": "#story <storyID|keyword>",
     "desc": "Give me a story ID or keyword and I'll try to retrieve its information.",
     "prompts": [
       "#story"
     ],
-    "role": "Cadets",
+    "role": "All",
     "group": "General",
     "channels": [
       "All"

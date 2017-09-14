@@ -6,7 +6,7 @@ module.exports = {
     "prompts": [
       "#emoji"
     ],
-    "role": "Cadets",
+    "role": "All",
     "channels": [
       "All"
     ]

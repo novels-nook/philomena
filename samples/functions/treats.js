@@ -19,7 +19,7 @@ module.exports = {
 	  emoji.emojify(':doughnut:'),
 	  emoji.emojify(':cookie:')
 	],
-    "role": "Cadets",
+    "role": "All",
     "channels": [
       "All"
     ]

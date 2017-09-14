@@ -9,7 +9,7 @@ module.exports = {
     "prompts": [
       "#roll"
     ],
-    "role": "Cadets",
+    "role": "All",
     "channels": [
       "All"
     ]

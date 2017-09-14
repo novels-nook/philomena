@@ -6,7 +6,7 @@ module.exports = {
       "#commands",
       "#command"
     ],
-    "role": "Cadets",
+    "role": "All",
     "channels": [
       "All"
     ]
