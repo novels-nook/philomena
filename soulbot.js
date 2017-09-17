@@ -2,7 +2,7 @@ var Discord = require("discord.js"),
   glob = require("glob"),
   fs = require("fs"),
   moment = require("moment-timezone"),
-  brain = require('fuse.js'),
+  heart = require('fuse.js'),
   chance = require('chance'),
   chance = new chance();
 
@@ -33,7 +33,7 @@ var SoulBot = new function() {
 
         bot.connected = true;
 
-        glob('./+(helpers|functions|timers|dialog)/**/*.js', function(err, files) {
+        glob('./+(helpers|functions|timers|heart)/**/*.js', function(err, files) {
           for (var i = 0, len = files.length; i < len; i++) {
             var path = files[i],
               file = require(path),
@@ -56,7 +56,7 @@ var SoulBot = new function() {
               case 'timers':
                 file.execute(bot);
                 break;
-			  case 'dialog':
+			  case 'heart':
 			    prompts.push(file);
 			    break;
             }
@@ -73,7 +73,7 @@ var SoulBot = new function() {
               }
             });
 
-			bot.dialog = new brain(prompts, { keys : ['prompts'] });
+			bot.heart = new heart(prompts, { keys : ['prompts'], threshold : 0.5 });
 
             // Shortcut the data & soul helpers function
             bot.data = bot.helpers.data;
@@ -139,7 +139,7 @@ var SoulBot = new function() {
                   try {
                     delete require.cache[require.resolve(bot.commands[c].path)];
                     theFunction = require(bot.commands[c].path);
-                    theFunction.execute(bot, message.content.split(' '), message);
+                    theFunction.execute(bot, message.content.split(prompt).pop().trim(), message);
                   } catch (err) {
                     console.log(err);
                   }
@@ -149,7 +149,7 @@ var SoulBot = new function() {
               }
             }
 
-			var thought = bot.dialog.search(message.cleanContent);
+			var thought = bot.heart.search(message.cleanContent);
 
 			if (thought.length > 0) {
 			  try {
