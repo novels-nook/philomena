@@ -11,10 +11,12 @@
     "discord.js": "^11.0.0",
     "forever": "^0.15.3",
     "fs": "0.0.1-security",
+    "fuse.js": "^3.1.0",
     "glob": "^7.1.2",
     "js-beautify": "^1.6.14",
     "moment-timezone": "^0.5.11",
     "node-emoji": "^1.5.1",
+    "node-persist": "^2.1.0",
     "node-trello": "^1.2.1",
     "request": "^2.79.0",
     "trello": "^0.7.0"
@@ -24,7 +26,7 @@
     "start": "forever start ./soulbot.js",
     "stop": "forever stop soulbot.js",
     "restart": "forever restart soulbot.js",
-	"beautify": "node ./beautify.js"
+    "beautify": "node ./beautify.js"
   },
   "author": "Kristen Trzonkowski",
   "license": "ISC"
