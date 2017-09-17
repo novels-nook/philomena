@@ -3,6 +3,8 @@
 /functions/*
 /timers/*
 /soul/*
+/brain/*
+/dialog/*
 /node_modules
 npm-debug.log
 .node-persist/
