@@ -12,21 +12,23 @@ module.exports = function(bot) {
 
     days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 
-    basicResponse: function (message) {
-      var responseList = bot.soul('basicResponses');
+    basicResponse: function(message) {
+	  if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
+        var responseList = bot.soul('basicResponses');
 
-      if (bot.soul('userResponses')[message.author.id]) {
-        responseList = responseList.concat(bot.soul('userResponses')[message.author.id]);
-      }
-
-      for (var group in bot.soul('groupResponses')) {
-        if (bot.helpers.memberHasRole(message.author.id, group)) {
-          responseList = responseList.concat(bot.soul('groupResponses')[group]);
+        if (bot.soul('userResponses')[message.author.id]) {
+          responseList = responseList.concat(bot.soul('userResponses')[message.author.id]);
         }
-      }
 
-      message.channel.send(chance.pickone(responseList));
-	},
+        for (var group in bot.soul('groupResponses')) {
+          if (bot.helpers.memberHasRole(message.author.id, group)) {
+            responseList = responseList.concat(bot.soul('groupResponses')[group]);
+          }
+        }
+
+        message.channel.send(chance.pickone(responseList));
+	  }
+    },
 
     containsKeyword: function(string, keyword) {
       if (Array.isArray(keyword)) {
@@ -216,15 +218,15 @@ module.exports = function(bot) {
     },
 
     // do this smarter
-	soul: function (file) {
+    soul: function(file) {
       return bot.helpers.getFromCache('soul', file);
-	},
+    },
 
     data: function(file) {
       return bot.helpers.getFromCache('data', file);
     },
 
-	getFromCache: function (type, file) {
+    getFromCache: function(type, file) {
       if (!bot.cache[file]) {
         var json = fs.readFileSync(type + "/" + file + ".json");
 
@@ -246,9 +248,9 @@ module.exports = function(bot) {
       }
 
       return output;
-	},
+    },
 
-    updateSoul: function (file) {
+    updateSoul: function(file) {
       bot.helpers.updateFromCache('soul', file);
     },
 
@@ -256,7 +258,7 @@ module.exports = function(bot) {
       bot.helpers.updateFromCache('data', file);
     },
 
-    updateFromCache: function (type, file) {
+    updateFromCache: function(type, file) {
       var data = JSON.stringify(bot.cache[file]);
 
       if (data) {

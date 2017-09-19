@@ -1,14 +1,27 @@
-var Discord = require("discord.js"),
-  Chance = require("chance"),
-  chance = new Chance(),
-  glob = require("glob"),
-  fs = require("fs"),
-  moment = require("moment-timezone"),
-  timeouts = [];
+var Discord = require('discord.js'),
+  glob = require('glob'),
+  fs = require('fs'),
+  moment = require('moment-timezone'),
+  Brain = require('natural-brain'),
+  brain = new Brain(),
+  memory = require('node-persist'),
+  chance = require('chance'),
+  chance = new chance();
 
-var AzuBot = new function() {
+  moment.tz.setDefault("America/New_York");
+  memory.initSync();
+
+/* this needs to go somewhere else but idk it goes here for now */
+  var nonStopWords = ['where', 'what', 'who', 'why', 'would'];
+
+  for (var s = 0, slen = nonStopWords.length; s < slen; s++) {
+    Brain.stopwords.words.splice(Brain.stopwords.words.indexOf(nonStopWords[s]), 1);
+  }
+
+var SoulBot = new function() {
   this.client = new Discord.Client();
   this.connected = false;
+  this.memory = memory;
   this.cache = [];
   this.commands = [];
   this.helpers = {};
@@ -21,8 +34,7 @@ var AzuBot = new function() {
     bot.client.login(bot.config.clientId);
 
     bot.client.on("ready", function() {
-      console.log("Logged in with username: " + bot.client.user.username + ".");
-      console.log("Logged in with ID: " + bot.client.user.id + ".");
+      console.log("Logged in as " + bot.client.user.username + " (" + bot.client.user.id + ")");
       console.log("No matter who I am logged in as, I am still SoulBot at heart.")
       console.log("Currently connected to:")
       bot.client.guilds.map(server => server.name).forEach(function(item) {console.log("  - " + item);})
@@ -32,7 +44,7 @@ var AzuBot = new function() {
       if (!bot.connected) {
         bot.connected = true;
 
-        glob('./+(helpers|functions|timers)/**/*.js', function(err, files) {
+        glob('./+(helpers|functions|timers|heart)/**/*.js', function(err, files) {
           for (var i = 0, len = files.length; i < len; i++) {
             var path = files[i],
               file = require(path),
@@ -55,27 +67,35 @@ var AzuBot = new function() {
               case 'timers':
                 file.execute(bot);
                 break;
+			  case 'heart':
+                for (var p = 0, plen = file.prompts.length; p < plen; p++) {
+                  brain.addDocument(file.prompts[p], path.split('/').pop());
+                }
+			    break;
             }
-
-            bot.commands.sort(function (a, b) {
-              if (a.priority && b.priority) {
-                return a.priority > b.priority ? -1 : 1;
-              }
-              else if (a.priority) {
-                return -1;
-              }
-              else {
-                return 1;
-              }
-            });
-
-            // Shortcut the data & soul helpers function
-            bot.data = bot.helpers.data;
-			bot.soul = bot.helpers.soul;
-
-            // Clear memory
-            delete require.cache[require.resolve(path)];
           }
+
+          bot.commands.sort(function (a, b) {
+            if (a.priority && b.priority) {
+              return a.priority > b.priority ? -1 : 1;
+            }
+            else if (a.priority) {
+              return -1;
+            }
+            else {
+              return 1;
+            }
+          });
+
+          // Shortcut the data & soul helpers function
+          bot.data = bot.helpers.data;
+		  bot.soul = bot.helpers.soul;
+
+
+          brain.train();
+
+          // Clear memory
+          delete require.cache[require.resolve(path)];
         });
       }
     });
@@ -101,51 +121,39 @@ var AzuBot = new function() {
     });
 
     bot.client.on("message", function(message) {
+      if (!bot.helpers.isBot(message.author.id)) {
+        bot.helpers.isNobody(message.author.id).then(function(user) {
       // Empty the cache
       for (var key in bot.cache) {
         delete bot.cache[key];
       }
 
-      if (!bot.helpers.isBot(message.author.id)) {
-        var isDeviantArtLink = message.content.match("(http(s)?:\/\/.*.deviantart.com\/art\/[^ ]+)");
+	  var isMentioned = false;
 
-        if (isDeviantArtLink && bot.config.previewDeviantArt) {
-          bot.helpers.getMETA(isDeviantArtLink[0], function(meta) {
-            var responseList = [
-              "Oh! Let me get that for you!",
-              "Wow, you found a great one!",
-              "Here you go!",
-              "Look at this!",
-              "DeviantArt's previews don't work, but it's okay, I've got your back.",
-              "Mr. Peepers thinks this pic is pretty cool.",
-              "Oops, you dropped this!",
-              "Picture, picture, in the preview, who's the coolest pony of all?  (It's me.)",
-              "Aparecium!",
-              "<:squee:276843929234571274>"
-            ];
+		    if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
+              if (bot.pings[message.channel.id] >= Date.now() - 500) {
+                message.reply("Whoa! Hold on, I'm a little overloaded at the moment. Try again in a sec!!\nhttps://i.imgur.com/ciCUOiM.png");
+                return false;
+              }
 
-            message.reply(chance.pickone(responseList) + " " + meta.image);
-          });
-        } else if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
-          bot.helpers.isNobody(message.author.id).then(function(user) {
-            if (bot.pings[message.channel.id] >= Date.now() - 500) {
-              message.reply("Whoa! Hold on, I'm a little overloaded at the moment. Try again in a sec!!\nhttps://i.imgur.com/ciCUOiM.png");
-              return false;
-            }
-
-            bot.pings[message.channel.id] = Date.now();
+              bot.pings[message.channel.id] = Date.now();
+			  isMentioned = true;
+			}
 
             for (var c = 0, clen = bot.commands.length; c < clen; c++) {
               for (var p = 0, plen = bot.commands[c].prompts.length; p < plen; p++) {
-			    var prompt = new RegExp(bot.commands[c].prompts[p].trim().replace(/^([^A-Z0-9])?([A-Z0-9_])([^A-Z0-9])?$/gi, "$1\\b$2\\b$3").replace(/\s/g, "\\s?"), "gi");
+                var prompt = new RegExp(bot.commands[c].prompts[p].trim().replace(/^([^A-Z0-9])?([A-Z0-9_])([^A-Z0-9])?$/gi, "$1\\b$2\\b$3").replace(/\s/g, "\\s?"), "gi");
 
-                if (message.content.match(prompt) && bot.helpers.isChannel(message.channel, bot.commands[c].channels) && bot.helpers.hasPermission(message.author.id, bot.commands[c].role)) {
-                  var args = message.content.split(prompt).pop().trim();
-
+                if (
+				      message.content.match(prompt) && // Prompt matches
+				      bot.helpers.isChannel(message.channel, bot.commands[c].channels) && // Correct channel
+					  bot.helpers.hasPermission(message.author.id, bot.commands[c].role) && // Correct permission level
+					  (bot.commands[c].noMention || isMentioned) // Doesn't require mentioning or bot is mentioned
+				   ) {
                   try {
                     delete require.cache[require.resolve(bot.commands[c].path)];
                     theFunction = require(bot.commands[c].path);
-                    theFunction.execute(bot, args, message);
+                    theFunction.execute(bot, message.content.split(prompt).pop().trim(), message);
                   } catch (err) {
                     console.log(err);
                   }
@@ -155,18 +163,35 @@ var AzuBot = new function() {
               }
             }
 
-            bot.helpers.basicResponse(message);
+            var thoughts = brain.getClassifications(message.cleanContent);
+            thoughts.sort(function (a, b) { return a.value < b.value; });
+            var thought = thoughts.shift();
+
+            if (thought.value >= .75) {
+			  thought = require('./heart/' + thought.label);
+			  try {
+			    if (isMentioned || (thought.noMention && chance.bool({ likelihood : 20 }))) {
+                  message.channel.send(chance.pickone(thought.execute(bot, message.content.split(' '), message)));
+				}
+			  } catch (err) {
+                console.log(err);
+			  }
+			}
+			else if (isMentioned) {
+              bot.helpers.basicResponse(message);
+			}
           }).catch(function(err) {
             console.log(err);
           });
-        }
       }
     });
   };
 }
 
-AzuBot.run();
+SoulBot.run();
 
+
+// move these or something idk
 function unique(elem, pos, arr) {
   return arr.indexOf(elem) == pos;
 }
