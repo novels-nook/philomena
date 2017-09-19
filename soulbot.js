@@ -1,14 +1,27 @@
-var Discord = require("discord.js"),
-  glob = require("glob"),
-  fs = require("fs"),
-  moment = require("moment-timezone"),
-  heart = require('fuse.js'),
+var Discord = require('discord.js'),
+  glob = require('glob'),
+  fs = require('fs'),
+  moment = require('moment-timezone'),
+  Brain = require('natural-brain'),
+  brain = new Brain(),
+  memory = require('node-persist'),
   chance = require('chance'),
   chance = new chance();
+
+  moment.tz.setDefault("America/New_York");
+  memory.initSync();
+
+/* this needs to go somewhere else but idk it goes here for now */
+  var nonStopWords = ['where', 'what', 'who', 'why', 'would'];
+
+  for (var s = 0, slen = nonStopWords.length; s < slen; s++) {
+    Brain.stopwords.words.splice(Brain.stopwords.words.indexOf(nonStopWords[s]), 1);
+  }
 
 var SoulBot = new function() {
   this.client = new Discord.Client();
   this.connected = false;
+  this.memory = memory;
   this.cache = [];
   this.commands = [];
   this.helpers = {};
@@ -29,8 +42,6 @@ var SoulBot = new function() {
       bot.server = bot.client.guilds.get(bot.config.guildId);
 
       if (!bot.connected) {
-	    var prompts = [];
-
         bot.connected = true;
 
         glob('./+(helpers|functions|timers|heart)/**/*.js', function(err, files) {
@@ -57,31 +68,34 @@ var SoulBot = new function() {
                 file.execute(bot);
                 break;
 			  case 'heart':
-			    prompts.push(file);
+                for (var p = 0, plen = file.prompts.length; p < plen; p++) {
+                  brain.addDocument(file.prompts[p], path.split('/').pop());
+                }
 			    break;
             }
-
-            bot.commands.sort(function (a, b) {
-              if (a.priority && b.priority) {
-                return a.priority > b.priority ? -1 : 1;
-              }
-              else if (a.priority) {
-                return -1;
-              }
-              else {
-                return 1;
-              }
-            });
-
-			bot.heart = new heart(prompts, { keys : ['prompts'], threshold : 0.5 });
-
-            // Shortcut the data & soul helpers function
-            bot.data = bot.helpers.data;
-			bot.soul = bot.helpers.soul;
-
-            // Clear memory
-            delete require.cache[require.resolve(path)];
           }
+
+          bot.commands.sort(function (a, b) {
+            if (a.priority && b.priority) {
+              return a.priority > b.priority ? -1 : 1;
+            }
+            else if (a.priority) {
+              return -1;
+            }
+            else {
+              return 1;
+            }
+          });
+
+          // Shortcut the data & soul helpers function
+          bot.data = bot.helpers.data;
+		  bot.soul = bot.helpers.soul;
+
+
+          brain.train();
+
+          // Clear memory
+          delete require.cache[require.resolve(path)];
         });
       }
     });
@@ -149,12 +163,15 @@ var SoulBot = new function() {
               }
             }
 
-			var thought = bot.heart.search(message.cleanContent);
+            var thoughts = brain.getClassifications(message.cleanContent);
+            thoughts.sort(function (a, b) { return a.value < b.value; });
+            var thought = thoughts.shift();
 
-			if (thought.length > 0) {
+            if (thought.value >= .75) {
+			  thought = require('./heart/' + thought.label);
 			  try {
-			    if (isMentioned || (thought[0].noMention && chance.bool({ likelihood : 10 }))) {
-                  message.channel.send(chance.pickone(thought[0].execute(bot, message.content.split(' '), message)));
+			    if (isMentioned || (thought.noMention && chance.bool({ likelihood : 20 }))) {
+                  message.channel.send(chance.pickone(thought.execute(bot, message.content.split(' '), message)));
 				}
 			  } catch (err) {
                 console.log(err);
