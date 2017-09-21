@@ -35,11 +35,15 @@ var SoulBot = new function() {
 
     bot.client.on("ready", function() {
       console.log("Logged in as " + bot.client.user.username + " (" + bot.client.user.id + ")");
-      console.log("No matter who I am logged in as, I am still SoulBot at heart.")
-      console.log("Currently connected to:")
-      bot.client.guilds.map(server => server.name).forEach(function(item) {console.log("  - " + item);})
+      console.log("No matter who I am logged in as, I am still SoulBot at heart.");
 
-      bot.server = bot.client.guilds.get(bot.config.guildId);
+      if (bot.client.guilds.length == 0) {
+        console.error("Please add me to a server first!");
+
+		return false;
+	  }
+
+      bot.server = bot.client.guilds.array().shift();
 
       if (!bot.connected) {
         bot.connected = true;

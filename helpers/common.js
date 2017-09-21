@@ -13,7 +13,7 @@ module.exports = function(bot) {
     days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 
     basicResponse: function(message) {
-	  if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
+      if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
         var responseList = bot.soul('basicResponses');
 
         if (bot.soul('userResponses')[message.author.id]) {
@@ -27,7 +27,7 @@ module.exports = function(bot) {
         }
 
         message.channel.send(chance.pickone(responseList));
-	  }
+      }
     },
 
     containsKeyword: function(string, keyword) {
@@ -167,7 +167,8 @@ module.exports = function(bot) {
     },
 
     isBot: function(userId) {
-      return userId == bot.config.botId;
+      console.log(userId, bot.client.user.id);
+      return userId == bot.client.user.id;
     },
 
     hasPermission: function(userId, checkRole) {
