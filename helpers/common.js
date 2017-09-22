@@ -167,7 +167,6 @@ module.exports = function(bot) {
     },
 
     isBot: function(userId) {
-      console.log(userId, bot.client.user.id);
       return userId == bot.client.user.id;
     },
 
