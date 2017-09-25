@@ -2,21 +2,13 @@ var Discord = require('discord.js'),
   glob = require('glob'),
   fs = require('fs'),
   moment = require('moment-timezone'),
-  Brain = require('natural-brain'),
-  brain = new Brain(),
+  brain = require('didyoumean2'),
   memory = require('node-persist'),
   chance = require('chance'),
   chance = new chance();
 
   moment.tz.setDefault("America/New_York");
   memory.initSync();
-
-/* this needs to go somewhere else but idk it goes here for now */
-  var nonStopWords = ['where', 'what', 'who', 'why', 'would'];
-
-  for (var s = 0, slen = nonStopWords.length; s < slen; s++) {
-    Brain.stopwords.words.splice(Brain.stopwords.words.indexOf(nonStopWords[s]), 1);
-  }
 
 var SoulBot = new function() {
   this.client = new Discord.Client();
@@ -49,6 +41,8 @@ var SoulBot = new function() {
         bot.connected = true;
 
         glob('./+(helpers|functions|timers|heart)/**/*.js', function(err, files) {
+          var thoughts = [];
+
           for (var i = 0, len = files.length; i < len; i++) {
             var path = files[i],
               file = require(path),
@@ -73,7 +67,7 @@ var SoulBot = new function() {
                 break;
 			  case 'heart':
                 for (var p = 0, plen = file.prompts.length; p < plen; p++) {
-                  brain.addDocument(file.prompts[p], path.split('/').pop());
+				  thoughts.push({ command : path.split('/').pop(), prompt : file.prompts[p] });
                 }
 			    break;
             }
@@ -94,9 +88,7 @@ var SoulBot = new function() {
           // Shortcut the data & soul helpers function
           bot.data = bot.helpers.data;
 		  bot.soul = bot.helpers.soul;
-
-
-          brain.train();
+		  bot.thoughts = thoughts;
 
           // Clear memory
           delete require.cache[require.resolve(path)];
@@ -167,12 +159,10 @@ var SoulBot = new function() {
               }
             }
 
-            var thoughts = brain.getClassifications(message.cleanContent);
-            thoughts.sort(function (a, b) { return a.value < b.value; });
-            var thought = thoughts.shift();
+            var thought = brain(message.cleanContent, bot.thoughts, { matchPath: 'prompt' });
 
-            if (thought.value >= .75) {
-			  thought = require('./heart/' + thought.label);
+            if (thought) {
+			  thought = require('./heart/' + thought.command);
 			  try {
 			    if (isMentioned || (thought.noMention && chance.bool({ likelihood : 20 }))) {
                   message.channel.send(chance.pickone(thought.execute(bot, message.content.split(' '), message)));
