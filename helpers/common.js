@@ -158,14 +158,6 @@ module.exports = function(bot) {
       return bot.server.members.get(userId).roles.get(bot.server.roles.find('name', checkRole).id) !== undefined;
     },
 
-    isNobody: function(userId) {
-      return new Promise(function(resolve, reject) {
-        bot.helpers.getMemberData(userId).then(function(user) {
-          resolve(user.roles.array().length > 0);
-        });
-      });
-    },
-
     isBot: function(userId) {
       return userId == bot.client.user.id;
     },

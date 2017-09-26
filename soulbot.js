@@ -118,7 +118,6 @@ var SoulBot = new function() {
 
     bot.client.on("message", function(message) {
       if (!bot.helpers.isBot(message.author.id)) {
-        bot.helpers.isNobody(message.author.id).then(function(user) {
       // Empty the cache
       for (var key in bot.cache) {
         delete bot.cache[key];
@@ -178,7 +177,6 @@ var SoulBot = new function() {
             console.log(err);
           });
       }
-    });
   };
 }
 
