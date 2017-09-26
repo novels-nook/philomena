@@ -26,6 +26,10 @@ module.exports = function(bot) {
           }
         }
 
+        if (responseList.length == 0) {
+          responseList = ["I don't know!"];
+		}
+
         message.channel.send(chance.pickone(responseList));
       }
     },

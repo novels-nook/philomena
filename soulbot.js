@@ -146,6 +146,10 @@ var SoulBot = new function() {
 					  (bot.commands[c].noMention || isMentioned) // Doesn't require mentioning or bot is mentioned
 				   ) {
                   try {
+				    if (bot.commands[c].path.includes('rpg')) {
+					  message.reply("Sorry, but the RPG is down right now.  :(");
+					  return false;
+					}
                     delete require.cache[require.resolve(bot.commands[c].path)];
                     theFunction = require(bot.commands[c].path);
                     theFunction.execute(bot, message.content.split(prompt).pop().trim(), message);
