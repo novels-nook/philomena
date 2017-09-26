@@ -225,6 +225,7 @@ module.exports = function(bot) {
         try {
           bot.cache[file] = JSON.parse(json);
         } catch (err) {
+		  return [];
           console.log("There has been an error parsing " + type + "/" + file + ".json", err);
         }
       }
