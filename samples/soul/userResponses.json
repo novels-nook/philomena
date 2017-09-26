@@ -1,4 +1,4 @@
 {
-  "<USER_ID>" : ["Specific user response", "Another specific user response," "I really love user!", "User is the best"],
+  "<USER_ID>" : ["Specific user response", "Another specific user response", "I really love user!", "User is the best"],
   "<ANOTHER_USER_ID>" : ["I like this user less than the other user.", "But secretly I like them more", "#tsundere"]
 }
