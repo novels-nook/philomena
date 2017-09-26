@@ -8,7 +8,7 @@ module.exports = {
     "priority": 500,
     "noMention": true,
     "prompts": [
-      "(http(s)?:\/\/.*.deviantart.com\/art\/[^ ]+)"
+      "(http(s)?:\/\/.*deviantart.com\/art\/[^ ]+)"
     ],
     "role": "All",
     "channels": [
