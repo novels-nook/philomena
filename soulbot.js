@@ -173,10 +173,8 @@ var SoulBot = new function() {
 			else if (isMentioned) {
               bot.helpers.basicResponse(message);
 			}
-          }).catch(function(err) {
-            console.log(err);
-          });
       }
+	  });
   };
 }
 
