@@ -159,7 +159,7 @@ module.exports = function(bot) {
     },
 
     memberHasRole: function(userId, checkRole) {
-      return bot.server.members.get(userId).roles.get(bot.server.roles.find('name', checkRole).id) !== undefined;
+      return bot.server.members.get(userId).roles.get(bot.server.roles.find('name', checkRole).id) !== undefined || bot.server.members.get(userId).roles.get(checkRole) !== undefined;
     },
 
     isBot: function(userId) {
@@ -183,17 +183,9 @@ module.exports = function(bot) {
           return true;
         }
 
-        if (roles[i].name == checkRole) {
+        if (roles[i].name == checkRole || roles[i].id == checkRole) {
           break;
         }
-      }
-
-      return false;
-    },
-
-    hasRole: function(userId, checkRole) {
-      if (bot.helpers.memberHasRole(userId, checkRole)) {
-        return true;
       }
 
       return false;
@@ -285,37 +277,6 @@ module.exports = function(bot) {
         } else if (value != null && typeof value === 'object') {
           bot.helpers.scrubObject(obj[key]);
         }
-      });
-    },
-
-    fetchUserData: function(data, callback) {
-      request({
-          url: "http://192.168.0.201/api.php",
-          method: "POST",
-          json: true,
-          form: data
-        },
-        function(error, response, data) {
-          try {
-            bot.helpers.scrubObject(data);
-            callback(data);
-          } catch (err) {
-            console.log(data);
-            console.log(err);
-          }
-        });
-    },
-
-    updateUserData: function(data, callback) {
-      request({
-        url: "http://192.168.0.201/api.php",
-        method: "POST",
-        json: true,
-        form: data
-      }, function(error, response, data) {
-        try {
-          callback(data);
-        } catch (err) {}
       });
     },
 
