@@ -123,7 +123,7 @@ module.exports = function(bot) {
     getMETA: function(url, callback) {
       request({
           headers: {
-            'User-Agent': 'AzuBOT/0.1'
+            'User-Agent': 'SoulBOT/0.1'
           },
           url: url,
           method: "GET",
