@@ -3,7 +3,7 @@
 /functions/*
 /timers/*
 /soul/*
-/heart/*
+/logs/*
 /node_modules
 npm-debug.log
 .node-persist/
