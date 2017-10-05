@@ -28,7 +28,7 @@ module.exports = function(bot) {
 
         if (responseList.length == 0) {
           responseList = ["I don't know!"];
-		}
+        }
 
         message.channel.send(chance.pickone(responseList));
       }
@@ -221,7 +221,7 @@ module.exports = function(bot) {
         try {
           bot.cache[file] = JSON.parse(json);
         } catch (err) {
-		  return [];
+          return [];
           console.log("There has been an error parsing " + type + "/" + file + ".json", err);
         }
       }
