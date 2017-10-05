@@ -23,7 +23,7 @@ module.exports = {
       storyId = keywords[args.toLowerCase()];
     }
 
-    message.channel.sendMessage("Let me check my files...").then(function() {
+    message.channel.send("Let me check my files...").then(function() {
       bot.helpers.getJSON({
         url: "https://www.fimfiction.net/api/v2/stories?sort=-relevance&" + (storyId != 0 ? 'filter[ids]=' + storyId : 'query=' + args),
         headers: {
@@ -32,10 +32,10 @@ module.exports = {
         }
       }, function(response) {
         if (!response.data || response.data.length == 0) {
-          message.channel.sendMessage("Hmm, sorry, I had trouble pulling that information.");
+          message.channel.send("Hmm, sorry, I had trouble pulling that information.");
         } else {
           if (response.data[0].attributes.content_rating == "mature") {
-            message.channel.sendMessage("Whoa!  Sorry, bucko, but you don't have clearance for that!");
+            message.channel.send("Whoa!  Sorry, bucko, but you don't have clearance for that!");
           } else {
             var story = response.data[0],
               lastUpdated = story.attributes.date_updated,
@@ -64,7 +64,7 @@ module.exports = {
               }
             }
 
-            message.channel.sendMessage("<" + story.meta.url + ">");
+            message.channel.send("<" + story.meta.url + ">");
             message.channel.sendEmbed({
               color: parseInt(story.attributes.color.hex, 16),
               author: author,
