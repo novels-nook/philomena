@@ -90,7 +90,7 @@ module.exports = function(bot) {
             callback(data);
           } catch (err) {
             console.log(data);
-            console.log(err);
+            console.error(err);
           }
         });
     },
@@ -115,7 +115,7 @@ module.exports = function(bot) {
             callback(data);
           } catch (err) {
             console.log(data);
-            console.log(err);
+            console.error(err);
           }
         });
     },
@@ -142,7 +142,7 @@ module.exports = function(bot) {
             callback(meta);
           } catch (err) {
             console.log(data);
-            console.log(err);
+            console.error(err);
           }
         });
     },
@@ -152,7 +152,7 @@ module.exports = function(bot) {
         bot.server.fetchMember(userId).then(function(user) {
           resolve(user);
         }).catch(function(err) {
-          console.log(err);
+          console.error(err);
           reject(false);
         });
       });
@@ -221,8 +221,8 @@ module.exports = function(bot) {
         try {
           bot.cache[file] = JSON.parse(json);
         } catch (err) {
+          console.error("There has been an error parsing " + type + "/" + file + ".json", err);
           return [];
-          console.log("There has been an error parsing " + type + "/" + file + ".json", err);
         }
       }
 
