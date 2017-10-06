@@ -147,8 +147,8 @@ var SoulBot = new function() {
               bot.helpers.hasPermission(message.author.id, command.role) && // Correct permission level
               (
                 isMentioned || // Is mentioned OR
-                (commands.noMention && chance.bool({
-                  likelihood: Math.min(100, commands.noMentionLikelihood)
+                (command.noMention && chance.bool({
+                  likelihood: Math.min(100, command.noMentionLikelihood)
                 })) // Doesn't require mentioning and triggers likelihood check (default: always)
               )
             ) {
