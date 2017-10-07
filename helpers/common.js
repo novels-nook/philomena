@@ -62,23 +62,6 @@ module.exports = function(bot) {
       }
     },
 
-    getMentions: function(message) {
-      var output = [],
-        mentions = message.match(/\<\@\!?([0-9]+)\>/g);
-
-      if (mentions) {
-        for (var i = 0, len = mentions.length; i < len; i++) {
-          var mention = mentions[i].replace(/[\<\@\!\>]+/g, '');
-
-          if (!bot.helpers.isBot(mention)) {
-            output.push(bot.server.members.get(mention));
-          }
-        }
-      }
-
-      return output;
-    },
-
     getHTML: function(url, callback) {
       request({
           url: url,
