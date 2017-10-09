@@ -35,7 +35,19 @@ var SoulBot = new function() {
         return false;
       }
 
-      bot.server = bot.client.guilds.array().shift();
+	  var servers = bot.client.guilds.array();
+	  bot.server = servers.shift();
+
+      if (servers.length > 0) {
+	  console.log("My home is " + bot.server.name + ", but I am also hanging out in:");
+
+        for (var i = 0, len = servers.length; i < len; i++) {
+          console.log(" - " + servers[i].name);
+	    }
+	  }
+	  else {
+        console.log("I currently live in " + bot.server.name + ".");
+	  }
 
       if (!bot.connected) {
         bot.connected = true;
@@ -125,6 +137,20 @@ var SoulBot = new function() {
           }
 
           bot.pings[message.channel.id] = Date.now();
+
+		  var context = bot.helpers.getContext(message.author);
+
+		  if (context) {
+            delete require.cache[require.resolve(context.command)];
+			theFunction = require(context.command);
+
+            if (bot.helpers.isChannel(message.channel, theFunction.command.channels)) {
+			  var args = message.cleanContent.replace('@Azurite', '').trim();
+              theFunction.execute(bot, args, message);
+			  return false;
+			}
+		  }
+
           isMentioned = true;
         }
 
@@ -138,7 +164,7 @@ var SoulBot = new function() {
             if (command.conversational) {
               match = (brain.JaroWinklerDistance(command.prompts[p], message.cleanContent) + brain.DiceCoefficient(command.prompts[p], message.cleanContent)) / 2 >= .80;
             } else {
-              match = message.content.match(prompt);
+              match = message.cleanContent.match(prompt);
             }
 
             if (
@@ -160,7 +186,7 @@ var SoulBot = new function() {
 
                 delete require.cache[require.resolve(command.path)];
                 theFunction = require(command.path);
-                theFunction.execute(bot, message.content.split(prompt).pop().trim(), message);
+                theFunction.execute(bot, message.cleanContent.split(prompt).pop().trim(), message);
               } catch (err) {
                 console.log(err);
               }
