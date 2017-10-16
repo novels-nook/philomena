@@ -7,6 +7,7 @@ module.exports = {
     "desc": "Discord and deviantArt do not get along.  Let SoulBot preview the images for you!",
     "priority": 500,
     "noMention": true,
+	"noMentionLikelihood": 100,
     "prompts": [
       "(http(s)?:\/\/.*deviantart.com\/art\/[^ ]+)"
     ],

@@ -88,7 +88,7 @@ module.exports = function(bot) {
       request({
           url: data.url,
           method: data.method || "GET",
-          data: data.data || {},
+          form: data.data || {},
           headers: data.headers || {},
           json: true
         },
@@ -241,26 +241,28 @@ module.exports = function(bot) {
     },
 
     scrubObject: function(obj) {
-      var keys = Object.keys(obj);
+      if (obj) {
+        var keys = Object.keys(obj);
 
-      keys.forEach(function(key) {
-        var value = obj[key];
+        keys.forEach(function(key) {
+          var value = obj[key];
 
-        if (typeof value === 'string') {
-          var lvalue = value.toLowerCase();
-          if (lvalue === 'true') {
-            obj[key] = true;
-          } else if (lvalue === 'false') {
-            obj[key] = false;
-          } else if (!isNaN(lvalue)) {
-            if (lvalue.length < 15) {
-              obj[key] = lvalue * 1;
+          if (typeof value === 'string') {
+            var lvalue = value.toLowerCase();
+            if (lvalue === 'true') {
+              obj[key] = true;
+            } else if (lvalue === 'false') {
+              obj[key] = false;
+            } else if (!isNaN(lvalue)) {
+              if (lvalue.length < 15) {
+                obj[key] = lvalue * 1;
+              }
             }
+          } else if (value != null && typeof value === 'object') {
+            bot.helpers.scrubObject(obj[key]);
           }
-        } else if (value != null && typeof value === 'object') {
-          bot.helpers.scrubObject(obj[key]);
-        }
-      });
+        });
+      }
     },
 
     urlExists: function(url, callback) {

@@ -13,6 +13,7 @@ memory.initSync();
 var SoulBot = new function() {
   this.client = new Discord.Client();
   this.connected = false;
+  this.brain = brain;
   this.memory = memory;
   this.cache = [];
   this.commands = [];
@@ -35,19 +36,18 @@ var SoulBot = new function() {
         return false;
       }
 
-	  var servers = bot.client.guilds.array();
-	  bot.server = servers.shift();
+      var servers = bot.client.guilds.array();
+      bot.server = servers.shift();
 
       if (servers.length > 0) {
-	  console.log("My home is " + bot.server.name + ", but I am also hanging out in:");
+        console.log("My home is " + bot.server.name + ", but I am also hanging out in:");
 
         for (var i = 0, len = servers.length; i < len; i++) {
           console.log(" - " + servers[i].name);
-	    }
-	  }
-	  else {
+        }
+      } else {
         console.log("I currently live in " + bot.server.name + ".");
-	  }
+      }
 
       if (!bot.connected) {
         bot.connected = true;
@@ -138,18 +138,18 @@ var SoulBot = new function() {
 
           bot.pings[message.channel.id] = Date.now();
 
-		  var context = bot.helpers.getContext(message.author);
+          var context = bot.helpers.getContext(message.author);
 
-		  if (context) {
+          if (context) {
             delete require.cache[require.resolve(context.command)];
-			theFunction = require(context.command);
+            theFunction = require(context.command);
 
             if (bot.helpers.isChannel(message.channel, theFunction.command.channels)) {
-			  var args = message.cleanContent.replace('@Azurite', '').trim();
+              var args = message.cleanContent.replace('@Azurite', '').trim();
               theFunction.execute(bot, args, message);
-			  return false;
-			}
-		  }
+              return false;
+            }
+          }
 
           isMentioned = true;
         }
@@ -162,7 +162,7 @@ var SoulBot = new function() {
               match;
 
             if (command.conversational) {
-              match = (brain.JaroWinklerDistance(command.prompts[p], message.cleanContent) + brain.DiceCoefficient(command.prompts[p], message.cleanContent)) / 2 >= .80;
+              match = (bot.brain.JaroWinklerDistance(command.prompts[p], message.cleanContent) + bot.brain.DiceCoefficient(command.prompts[p], message.cleanContent)) / 2 >= .80;
             } else {
               match = message.cleanContent.match(prompt);
             }
@@ -174,7 +174,7 @@ var SoulBot = new function() {
               (
                 isMentioned || // Is mentioned OR
                 (command.noMention && chance.bool({
-                  likelihood: Math.min(100, command.noMentionLikelihood)
+                  likelihood: command.noMentionLikelihood || 100
                 })) // Doesn't require mentioning and triggers likelihood check (default: always)
               )
             ) {
