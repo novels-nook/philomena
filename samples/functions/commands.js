@@ -28,9 +28,9 @@ module.exports = {
         output = "Sorry, I don't recognize that command.  Try \"#commands\" for a list of ones available to you.";
       }
 
-      message.author.sendMessage(output);
+      message.author.send(output);
     } else {
-      message.author.sendMessage("Here is my current list of commands!").then(function() {
+      message.author.send("Here is my current list of commands!").then(function() {
         var commands = {};
 
         for (var c = 0, clen = bot.commands.length; c < clen; c++) {
@@ -52,7 +52,7 @@ module.exports = {
 
           output += "```";
 
-          message.author.sendMessage(output);
+          message.author.send(output);
         }
       });
     }

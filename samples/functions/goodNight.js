@@ -14,6 +14,6 @@ module.exports = {
     ]
   },
   execute: function(bot, args, message) {
-    message.channel.sendMessage(chance.pickone(bot.soul("goodNight")));
+    message.channel.send(chance.pickone(bot.soul("goodNight")));
   }
 }

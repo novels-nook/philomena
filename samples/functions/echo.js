@@ -15,6 +15,6 @@ module.exports = {
   },
 
   execute: function(bot, args, message) {
-    bot.client.channels.find("name", bot.config.mainChat).sendMessage(args);
+    bot.client.channels.find("name", bot.config.mainChat).send(args);
   }
 }

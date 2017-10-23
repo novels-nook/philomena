@@ -37,6 +37,11 @@ var SoulBot = new function() {
       }
 
       var servers = bot.client.guilds.array();
+
+      servers.sort(function (a, b) {
+        return a.joinedTimestamp - b.joinedTimestamp;
+	  });
+
       bot.server = servers.shift();
 
       if (servers.length > 0) {
@@ -114,7 +119,7 @@ var SoulBot = new function() {
             bot.server.channels.find("name", bot.config.mainChat).send(bot.soul("newUserGreeting").serverMessage.replace("{newUser}", user.toString()));
           }
           if (bot.config.greetNewUsersPersonally) {
-            user.sendMessage(bot.soul("newUserGreeting").userMessage);
+            user.send(bot.soul("newUserGreeting").userMessage);
           }
         },
         2500
@@ -138,14 +143,15 @@ var SoulBot = new function() {
 
           bot.pings[message.channel.id] = Date.now();
 
-          var context = bot.helpers.getContext(message.author);
+          var context = bot.helpers.getContext(message.author.id);
 
-          if (context) {
+          if (context && !bot.helpers.containsKeyword(message.content, "!context")) {
             delete require.cache[require.resolve(context.command)];
             theFunction = require(context.command);
 
             if (bot.helpers.isChannel(message.channel, theFunction.command.channels)) {
               var args = message.cleanContent.replace('@Azurite', '').trim();
+              theFunction.context = context;
               theFunction.execute(bot, args, message);
               return false;
             }
@@ -159,11 +165,17 @@ var SoulBot = new function() {
 
           for (var p = 0, plen = command.prompts.length; p < plen; p++) {
             var prompt = new RegExp(command.prompts[p].trim().replace(/^([^A-Z0-9])?([A-Z0-9_])([^A-Z0-9])?$/gi, "$1\\b$2\\b$3").replace(/\s/g, "\\s?"), "gi"),
-              match;
+              args, match;
 
             if (command.conversational) {
-              match = (bot.brain.JaroWinklerDistance(command.prompts[p], message.cleanContent) + bot.brain.DiceCoefficient(command.prompts[p], message.cleanContent)) / 2 >= .80;
+              args = message.cleanContent.replace('@Azurite', '').trim();
+              try {
+                match = (bot.brain.JaroWinklerDistance(command.prompts[p], message.cleanContent) + bot.brain.DiceCoefficient(command.prompts[p], message.cleanContent)) / 2 >= .70;
+              } catch (e) {
+                match = 0;
+              }
             } else {
+              args = message.cleanContent.split(prompt).pop().trim()
               match = message.cleanContent.match(prompt);
             }
 
@@ -179,14 +191,14 @@ var SoulBot = new function() {
               )
             ) {
               try {
-                if (command.path.includes('rpg')) {
+                if (!bot.helpers.hasPermission(message.author.id, "Quills") && command.path.includes('rpg')) {
                   message.reply("Sorry, but the RPG is down right now.  :(");
                   return false;
                 }
 
                 delete require.cache[require.resolve(command.path)];
                 theFunction = require(command.path);
-                theFunction.execute(bot, message.cleanContent.split(prompt).pop().trim(), message);
+                theFunction.execute(bot, args, message);
               } catch (err) {
                 console.log(err);
               }

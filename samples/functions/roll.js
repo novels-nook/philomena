@@ -16,11 +16,11 @@ module.exports = {
   },
   execute: function(bot, args, message) {
     try {
-      message.channel.sendMessage(emoji.emojify(':game_die: ') + " " + message.author.toString() + " rolls a " + chance.rpg(args.split(' ').shift(), {
+      message.channel.send(emoji.emojify(':game_die: ') + " " + message.author.toString() + " rolls a " + chance.rpg(args.split(' ').shift(), {
         sum: true
       }));
     } catch (err) {
-      message.channel.sendMessage(emoji.emojify(':game_die: ') + " " + message.author.toString() + " rolls a critical failure!");
+      message.channel.send(emoji.emojify(':game_die: ') + " " + message.author.toString() + " rolls a critical failure!");
     }
   }
 }

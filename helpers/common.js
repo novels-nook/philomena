@@ -85,22 +85,31 @@ module.exports = function(bot) {
         };
       }
 
-      request({
-          url: data.url,
-          method: data.method || "GET",
-          form: data.data || {},
-          headers: data.headers || {},
-          json: true
-        },
-        function(error, response, data) {
-          try {
-            bot.helpers.scrubObject(data);
-            callback(data);
-          } catch (err) {
-            console.log(data);
-            console.error(err);
-          }
-        });
+      var options = {
+        url: data.url,
+        method: data.method || "GET",
+        qs: data.data,
+        json: true,
+        headers: data.headers || {}
+      };
+
+      switch (options.method) {
+        case 'GET':
+          options.qs = data.data || {};
+          break;
+        default:
+          options.form = data.data || {};
+      }
+
+      request(options, function(error, response, data) {
+        try {
+          bot.helpers.scrubObject(data);
+          callback(data);
+        } catch (err) {
+          console.log(data);
+          console.error(err);
+        }
+      });
     },
 
     getMETA: function(url, callback) {
@@ -142,7 +151,13 @@ module.exports = function(bot) {
     },
 
     memberHasRole: function(userId, checkRole) {
-      return bot.server.members.get(userId).roles.get(bot.server.roles.find('name', checkRole).id) !== undefined || bot.server.members.get(userId).roles.get(checkRole) !== undefined;
+	  var role = bot.server.roles.find('name', checkRole);
+
+	  if (!role) {
+        return false;
+	  }
+
+      return bot.server.members.get(userId).roles.get(role.id) !== undefined || bot.server.members.get(userId).roles.get(checkRole) !== undefined;
     },
 
     isBot: function(userId) {

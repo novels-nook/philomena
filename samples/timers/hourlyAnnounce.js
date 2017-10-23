@@ -25,6 +25,6 @@ module.exports = {
     var hour = d.getHours(),
       minutes = d.getMinutes();
 
-    bot.server.channels.find("name", bot.config.mainChat).sendMessage(emoji.emojify(":clock" + (hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour)) + ":") + " \"Tickety-tock, it's " + hour + "'o'clock!\"");
+    bot.server.channels.find("name", bot.config.mainChat).send(emoji.emojify(":clock" + (hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour)) + ":") + " \"Tickety-tock, it's " + hour + "'o'clock!\"");
   }
 };

@@ -18,6 +18,6 @@ module.exports = {
       output += emoji.toString() + " :" + emoji.name + ": \r\n";
     });
 
-    message.channel.sendMessage(output).catch(console.error);
+    message.channel.send(output).catch(console.error);
   }
 }

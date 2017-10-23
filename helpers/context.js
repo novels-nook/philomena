@@ -2,10 +2,10 @@ var moment = require('moment-timezone');
 
 module.exports = function(bot) {
   return {
-    setContext: function(user, command, state) {
+    setContext: function(userId, command, state) {
       var context = bot.memory.getItemSync('context') || {};
 
-      context[user.id] = {
+      context[userId] = {
         'command': command,
         'state': state,
         'expires': moment().add('1', 'hour').valueOf()
@@ -14,19 +14,19 @@ module.exports = function(bot) {
       bot.memory.setItemSync('context', context);
     },
 
-    clearContext: function(user) {
+    clearContext: function(userId) {
       var context = bot.memory.getItemSync('context') || {};
 
-      context[user.id] = null;
+      context[userId] = null;
 
       bot.memory.setItemSync('context', context);
     },
 
-    getContext: function(user) {
+    getContext: function(userId) {
       var context = bot.memory.getItemSync('context') || {};
 
-      if (context && context[user.id] && context[user.id].expires && context[user.id].expires > moment().valueOf()) {
-        return context[user.id];
+      if (context && context[userId] && context[userId].expires && context[userId].expires > moment().valueOf()) {
+        return context[userId];
       } else {
         return false;
       }

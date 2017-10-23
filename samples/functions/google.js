@@ -13,9 +13,9 @@ module.exports = {
   },
   execute: function(bot, args, message) {
     if (args == "") {
-      message.channel.sendMessage("What do you want me to google?");
+      message.channel.send("What do you want me to google?");
     } else {
-      message.channel.sendMessage("Okay, Sergeant Lazypants.  http://lmgtfy.com/?q=" + args.replace(/\s/g, "+"));
+      message.channel.send("Okay, Sergeant Lazypants.  http://lmgtfy.com/?q=" + args.replace(/\s/g, "+"));
     }
   }
 }
