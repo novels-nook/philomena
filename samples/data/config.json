@@ -1,7 +1,0 @@
-{
-  "clientId": "<BOT TOKEN>",
-  "mainChat": "<NAME OF MAIN CHANNEL>"
-  "announceNewUsers": false,
-  "greetNewUsersPersonally": false,
-  "fimfictionAccessKey": "<FIMFICTION API KEY>"
-}

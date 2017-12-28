@@ -1,10 +1,8 @@
 var request = require('request'),
-  Chance = require("chance"),
-  chance = new Chance(),
   emoji = require('node-emoji'),
   util = require('util'),
-  fs = require("fs"),
-  moment = require("moment-timezone");
+  fs = require('fs'),
+  moment = require('moment-timezone');
 
 module.exports = function(bot) {
   return {
@@ -14,7 +12,7 @@ module.exports = function(bot) {
 
     basicResponse: function(message) {
       if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
-        var responseList = bot.soul('basicResponses');
+        var responseList = [];
 
         if (bot.soul('userResponses')[message.author.id]) {
           responseList = responseList.concat(bot.soul('userResponses')[message.author.id]);
@@ -26,11 +24,15 @@ module.exports = function(bot) {
           }
         }
 
+		if (responseList.length == 0) {
+          responseList = bot.soul('basicResponses');
+		}
+
         if (responseList.length == 0) {
           responseList = ["I don't know!"];
         }
 
-        message.channel.send(chance.pickone(responseList));
+        message.channel.send(bot.random.pickone(responseList));
       }
     },
 
@@ -104,9 +106,11 @@ module.exports = function(bot) {
       request(options, function(error, response, data) {
         try {
           bot.helpers.scrubObject(data);
-          callback(data);
+
+		  if (callback) {
+            callback(data);
+		  }
         } catch (err) {
-          console.log(data);
           console.error(err);
         }
       });
@@ -168,6 +172,9 @@ module.exports = function(bot) {
       if (checkRole == "All") {
         return true;
       }
+	  else if (checkRole == "None") {
+	    return false;
+	  }
 
       var user = bot.server.members.get(userId),
         roles = bot.server.roles.array();
@@ -203,7 +210,6 @@ module.exports = function(bot) {
       return false;
     },
 
-    // do this smarter
     soul: function(file) {
       return bot.helpers.getFromCache('soul', file);
     },
@@ -224,7 +230,7 @@ module.exports = function(bot) {
         }
       }
 
-      var output = [];
+      var output = bot.cache[file].constructor === Object ? {} : [];
 
       for (var key in bot.cache[file]) {
         if ((!!bot.cache[file][key]) && (bot.cache[file][key].constructor === Object)) {

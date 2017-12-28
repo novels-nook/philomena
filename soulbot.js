@@ -4,8 +4,7 @@ var Discord = require('discord.js'),
   moment = require('moment-timezone'),
   brain = require('natural'),
   memory = require('node-persist'),
-  chance = require('chance'),
-  chance = new chance();
+  chance = require('chance');
 
 moment.tz.setDefault("America/New_York");
 memory.initSync();
@@ -15,11 +14,12 @@ var SoulBot = new function() {
   this.connected = false;
   this.brain = brain;
   this.memory = memory;
+  this.random = new chance();
   this.cache = [];
   this.commands = [];
   this.helpers = {};
   this.pings = {};
-  this.config = JSON.parse(fs.readFileSync("./data/config.json"));
+  this.config = JSON.parse(fs.readFileSync("./config.json"));
 
   this.run = function() {
     var bot = this;
@@ -58,8 +58,6 @@ var SoulBot = new function() {
         bot.connected = true;
 
         glob('./+(helpers|functions|timers)/**/*.js', function(err, files) {
-          var thoughts = [];
-
           for (var i = 0, len = files.length; i < len; i++) {
             var path = files[i],
               file = require(path),
@@ -98,7 +96,6 @@ var SoulBot = new function() {
           // Shortcut the data & soul helpers function
           bot.data = bot.helpers.data;
           bot.soul = bot.helpers.soul;
-          bot.thoughts = thoughts;
 
           // Clear memory
           delete require.cache[require.resolve(path)];
@@ -116,10 +113,11 @@ var SoulBot = new function() {
     bot.client.on("guildMemberAdd", function(user) {
       setTimeout(function() {
           if (bot.config.announceNewUsers) {
-            bot.server.channels.find("name", bot.config.mainChat).send(bot.soul("newUserGreeting").serverMessage.replace("{newUser}", user.toString()));
+            bot.server.channels.find("name", bot.config.mainChat).send(bot.soul("configuration").newUser.messageServer.replace("{newUser}", user.toString()));
           }
+
           if (bot.config.greetNewUsersPersonally) {
-            user.send(bot.soul("newUserGreeting").userMessage);
+            user.send(bot.soul("configuration").newUser.messageUser);
           }
         },
         2500
@@ -137,7 +135,7 @@ var SoulBot = new function() {
 
         if (message.channel.type == "dm" || message.isMentioned(bot.client.user)) {
           if (bot.pings[message.channel.id] >= Date.now() - 500) {
-            message.reply("Whoa! Hold on, I'm a little overloaded at the moment. Try again in a sec!!\nhttps://i.imgur.com/ciCUOiM.png");
+            message.reply(bot.soul("configuration").overloaded);
             return false;
           }
 
@@ -150,7 +148,7 @@ var SoulBot = new function() {
             theFunction = require(context.command);
 
             if (bot.helpers.isChannel(message.channel, theFunction.command.channels)) {
-              var args = message.cleanContent.replace('@Azurite', '').trim();
+              var args = message.cleanContent.replace('@' + bot.client.user.username, '').trim();
               theFunction.context = context;
               theFunction.execute(bot, args, message);
               return false;
@@ -164,15 +162,22 @@ var SoulBot = new function() {
           var command = bot.commands[c];
 
           for (var p = 0, plen = command.prompts.length; p < plen; p++) {
-            var prompt = new RegExp(command.prompts[p].trim().replace(/^([^A-Z0-9])?([A-Z0-9_])([^A-Z0-9])?$/gi, "$1\\b$2\\b$3").replace(/\s/g, "\\s?"), "gi"),
-              args, match;
+		    var prompt, args, match;
+
+			if (command.prompts[p] instanceof RegExp) {
+			  prompt = command.prompts[p];
+			}
+			else {
+			  prompt = new RegExp(command.prompts[p].replace(/\s/g, "\\s?"), "gi");
+			}
 
             if (command.conversational) {
-              args = message.cleanContent.replace('@Azurite', '').trim();
+              args = message.cleanContent.replace('@' + bot.client.user.username, '').trim();
+
               try {
                 match = (bot.brain.JaroWinklerDistance(command.prompts[p], message.cleanContent) + bot.brain.DiceCoefficient(command.prompts[p], message.cleanContent)) / 2 >= .70;
               } catch (e) {
-                match = 0;
+                match = false;
               }
             } else {
               args = message.cleanContent.split(prompt).pop().trim()
@@ -185,17 +190,11 @@ var SoulBot = new function() {
               bot.helpers.hasPermission(message.author.id, command.role) && // Correct permission level
               (
                 isMentioned || // Is mentioned OR
-                (command.noMention && chance.bool({
-                  likelihood: command.noMentionLikelihood || 100
-                })) // Doesn't require mentioning and triggers likelihood check (default: always)
+				// Doesn't require mentioning and triggers likelihood check (default: always)
+                (command.noMention && bot.random.bool({ likelihood: command.noMentionLikelihood || 100 }))
               )
             ) {
               try {
-                if (!bot.helpers.hasPermission(message.author.id, "Quills") && command.path.includes('rpg')) {
-                  message.reply("Sorry, but the RPG is down right now.  :(");
-                  return false;
-                }
-
                 delete require.cache[require.resolve(command.path)];
                 theFunction = require(command.path);
                 theFunction.execute(bot, args, message);
