@@ -4,10 +4,10 @@ var Chance = require('chance'),
 module.exports = {
   command: {
     "name": "deviantArt Link Previews",
-    "desc": "Discord and deviantArt do not get along.  Let SoulBot preview the images for you!",
+    "desc": "Discord and deviantArt do not always get along.  Let SoulBot preview the images for you!",
     "priority": 500,
     "noMention": true,
-	"noMentionLikelihood": 100,
+    "noMentionLikelihood": 100,
     "prompts": [
       "(http(s)?:\/\/.*deviantart.com\/art\/[^ ]+)"
     ],
@@ -18,23 +18,18 @@ module.exports = {
   },
 
   execute: function(bot, args, message) {
-    var link = message.content.match(this.command.prompts[0]);
+    var self = this;
 
-    bot.helpers.getMETA(link[0], function(meta) {
-      var responseList = [
-        "Oh! Let me get that for you!",
-        "Wow, you found a great one!",
-        "Here you go!",
-        "Look at this!",
-        "DeviantArt's previews don't work, but it's okay, I've got your back.",
-        "Mr. Peepers thinks this pic is pretty cool.",
-        "Oops, you dropped this!",
-        "Picture, picture, in the preview, who's the coolest pony of all?  (It's me.)",
-        "Aparecium!",
-        "<:squee:276843929234571274>"
-      ];
+    setTimeout(function () {
+      if (message.embeds.length == 0) {
+        var link = message.content.match(self.command.prompts[0]);
 
-      message.reply(chance.pickone(responseList) + " " + meta.image);
-    });
+        bot.helpers.getMETA(link[0], function(meta) {
+          if (meta.image) {
+            message.reply(chance.pickone(bot.soul('deviantArtResponses')) + " " + meta.image);
+          }
+        });
+      }
+    }, 5000);
   }
 }
