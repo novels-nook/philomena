@@ -27,10 +27,10 @@ var SoulBot = new function() {
     bot.client.login(bot.config.clientId);
 
     /**
-	 * EVENT : Ready
-	 * - Fired when the client is successfully connected to Discord.
-	 * Handles setup of available commands, helpers, and timers.
-	 **/
+     * EVENT : Ready
+     * - Fired when the client is successfully connected to Discord.
+     * Handles setup of available commands, helpers, and timers.
+     **/
     bot.client.on("ready", function() {
       console.log("Logged in as " + bot.client.user.username + " (" + bot.client.user.id + ")");
       console.log("No matter who I am logged in as, I am still SoulBot at heart.");
@@ -41,7 +41,9 @@ var SoulBot = new function() {
       }
 
       var servers = bot.client.guilds.array();
-      servers.sort(function (a, b) { return a.joinedTimestamp - b.joinedTimestamp; });
+      servers.sort(function(a, b) {
+        return a.joinedTimestamp - b.joinedTimestamp;
+      });
       bot.server = servers.shift();
 
       if (servers.length > 0) {
@@ -50,8 +52,7 @@ var SoulBot = new function() {
         for (var i = 0, len = servers.length; i < len; i++) {
           console.log(" - " + servers[i].name);
         }
-      }
-	  else {
+      } else {
         console.log("I currently live in " + bot.server.name + ".");
       }
 
@@ -71,8 +72,7 @@ var SoulBot = new function() {
                 if (file.command) {
                   file.command.path = path;
                   bot.commands.push(file.command);
-                }
-				else {
+                } else {
                   console.error(path + ' does not have COMMAND information.');
                 }
                 break;
@@ -88,11 +88,9 @@ var SoulBot = new function() {
           bot.commands.sort(function(a, b) {
             if (a.priority && b.priority) {
               return a.priority > b.priority ? -1 : 1;
-            }
-			else if (a.priority) {
+            } else if (a.priority) {
               return -1;
-            }
-			else {
+            } else {
               return 1;
             }
           });
@@ -113,7 +111,7 @@ var SoulBot = new function() {
      * Attempts to log back in when disconnected.
      **/
     bot.client.on("disconnected", function(err) {
-	  // TODO: limit to x number of tries
+      // TODO: limit to x number of tries
       console.log("Disconnected.  Logging back in.");
       setTimeout(function() {
         bot.client.loginWithToken(bot.config.clientId);
@@ -125,15 +123,15 @@ var SoulBot = new function() {
      * - Fired when someone new joins the server.
      * Depending on the configuration settings, SoulBot will greet new users.
      **/
-    bot.client.on("guildMemberAdd", function (user) {
-      setTimeout(function () {
-          if (bot.config.announceNewUsers) {
-            bot.server.channels.find("name", bot.config.mainChat).send(bot.soul("configuration").newUser.messageServer.replace("{newUser}", user.toString()));
-          }
+    bot.client.on("guildMemberAdd", function(user) {
+      setTimeout(function() {
+        if (bot.config.announceNewUsers) {
+          bot.server.channels.find("name", bot.config.mainChat).send(bot.soul("configuration").newUser.messageServer.replace("{newUser}", user.toString()));
+        }
 
-          if (bot.config.greetNewUsersPersonally) {
-            user.send(bot.soul("configuration").newUser.messageUser);
-          }
+        if (bot.config.greetNewUsersPersonally) {
+          user.send(bot.soul("configuration").newUser.messageUser);
+        }
       }, 2500);
     });
 
@@ -142,7 +140,7 @@ var SoulBot = new function() {
      * - Fired when any message is sent to a server channel.
      * Handles responding to any recognized commands/triggers.
      **/
-    bot.client.on("message", function (message) {
+    bot.client.on("message", function(message) {
       if (!bot.helpers.isBot(message.author.id)) { // Don't respond to yourself, silly bot!
         // Empty the cache
         for (var key in bot.cache) {
@@ -180,14 +178,13 @@ var SoulBot = new function() {
           var command = bot.commands[c];
 
           for (var p = 0, plen = command.prompts.length; p < plen; p++) {
-		    var prompt, args, match;
+            var prompt, args, match;
 
-			if (command.prompts[p] instanceof RegExp) {
-			  prompt = command.prompts[p];
-			}
-			else {
-			  prompt = new RegExp(command.prompts[p].replace(/\s/g, "\\s?"), "gi");
-			}
+            if (command.prompts[p] instanceof RegExp) {
+              prompt = command.prompts[p];
+            } else {
+              prompt = new RegExp(command.prompts[p].replace(/\s/g, "\\s?"), "gi");
+            }
 
             if (command.conversational) {
               args = message.cleanContent.replace('@' + bot.client.user.username, '').trim();
@@ -197,8 +194,7 @@ var SoulBot = new function() {
               } catch (e) {
                 match = false;
               }
-            }
-			else {
+            } else {
               args = message.cleanContent.split(prompt).pop().trim()
               match = message.cleanContent.match(prompt);
             }
@@ -209,8 +205,10 @@ var SoulBot = new function() {
               bot.helpers.memberHasRole(message.author.id, command.role) && // Correct permission level
               (
                 isMentioned || // Is mentioned OR
-				// Doesn't require mentioning and triggers likelihood check (default: always)
-                (command.noMention && bot.random.bool({ likelihood: command.noMentionLikelihood || 100 }))
+                // Doesn't require mentioning and triggers likelihood check (default: always)
+                (command.noMention && bot.random.bool({
+                  likelihood: command.noMentionLikelihood || 100
+                }))
               )
             ) {
               try {
