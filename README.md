@@ -12,9 +12,9 @@ After getting node and npm on your server, you'll want to download or clone the 
 
 - If you haven't already, then create your bot.  You can find instructions for this here: https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token
 - If you haven't already, run `npm install` while in the root folder of this repo
-- Copy `config.json` from the `samples/data` folder to `data/` and:
+- Copy `config.json` from the `samples/data` folder to the root folder and:
   - Update the `clientId` with the Token from your bot's page
-  - *Optional*: Update the `mainChat` with the name of your "main" chatroom (e.g. general)
+  - *Optional but Recommended*: Update the `mainChat` with the name of your "main" chatroom (e.g. general)
 - Run `npm start` and you should be good to go!
 
 ## Warning
