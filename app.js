@@ -30,7 +30,7 @@ var SoulBot = new function() {
 	 * EVENT : Ready
 	 * - Fired when the client is successfully connected to Discord.
 	 * Handles setup of available commands, helpers, and timers.
-	 */
+	 **/
     bot.client.on("ready", function() {
       console.log("Logged in as " + bot.client.user.username + " (" + bot.client.user.id + ")");
       console.log("No matter who I am logged in as, I am still SoulBot at heart.");
@@ -107,11 +107,11 @@ var SoulBot = new function() {
       }
     });
 
-    /*
-	 * EVENT : Disconnected
-	 * - Fired when 
-	 * Attempts to log back in when disconnected.
-	 */
+    /**
+     * EVENT : Disconnected
+     * - Fired when 
+     * Attempts to log back in when disconnected.
+     **/
     bot.client.on("disconnected", function(err) {
 	  // TODO: limit to x number of tries
       console.log("Disconnected.  Logging back in.");
@@ -120,11 +120,11 @@ var SoulBot = new function() {
       }, 5000);
     });
 
-    /*
-	 * EVENT : New Member
-	 * - Fired when someone new joins the server.
-	 * Depending on the configuration settings, SoulBot will greet new users.
-	 */
+    /**
+     * EVENT : New Member
+     * - Fired when someone new joins the server.
+     * Depending on the configuration settings, SoulBot will greet new users.
+     **/
     bot.client.on("guildMemberAdd", function (user) {
       setTimeout(function () {
           if (bot.config.announceNewUsers) {
@@ -137,11 +137,11 @@ var SoulBot = new function() {
       }, 2500);
     });
 
-    /*
-	 * EVENT : Message
-	 * - Fired when any message is sent to a server channel.
-	 * Handles responding to any recognized commands/triggers.
-	 */
+    /**
+     * EVENT : Message
+     * - Fired when any message is sent to a server channel.
+     * Handles responding to any recognized commands/triggers.
+     **/
     bot.client.on("message", function (message) {
       if (!bot.helpers.isBot(message.author.id)) { // Don't respond to yourself, silly bot!
         // Empty the cache
