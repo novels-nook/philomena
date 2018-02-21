@@ -3,7 +3,7 @@ var beautify = require('js-beautify').js_beautify,
   fs = require('fs');
 
 glob('./+(data|functions|helpers|soul|timers)/**/*.js?(on)', function(err, files) {
-  files.push('./soulbot.js');
+  files.push('./app.js');
 
   for (var i = 0, len = files.length; i < len; i++) {
     console.log('Beautifying ' + files[i]);

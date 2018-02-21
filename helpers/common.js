@@ -1,6 +1,4 @@
 var request = require('request'),
-  emoji = require('node-emoji'),
-  util = require('util'),
   fs = require('fs'),
   moment = require('moment-timezone');
 
@@ -24,9 +22,9 @@ module.exports = function(bot) {
           }
         }
 
-		if (responseList.length == 0) {
+        if (responseList.length == 0) {
           responseList = bot.soul('basicResponses');
-		}
+        }
 
         if (responseList.length == 0) {
           responseList = ["I don't know!"];
@@ -107,9 +105,9 @@ module.exports = function(bot) {
         try {
           bot.helpers.scrubObject(data);
 
-		  if (callback) {
+          if (callback) {
             callback(data);
-		  }
+          }
         } catch (err) {
           console.error(err);
         }
@@ -155,13 +153,21 @@ module.exports = function(bot) {
     },
 
     memberHasRole: function(userId, checkRole) {
-	  var role = bot.server.roles.find('name', checkRole);
+      if (!Array.isArray(checkRole)) {
+        checkRole = [checkRole];
+      }
 
-	  if (!role) {
-        return false;
-	  }
+      for (var i = 0, len = checkRole.length; i < len; i++) {
+        var role = bot.server.roles.find('name', checkRole[i]);
 
-      return bot.server.members.get(userId).roles.get(role.id) !== undefined || bot.server.members.get(userId).roles.get(checkRole) !== undefined;
+        if (!role) {
+          continue;
+        } else if (bot.server.members.get(userId).roles.get(role.id) !== undefined || bot.server.members.get(userId).roles.get(checkRole[i]) !== undefined) {
+          return true;
+        }
+      }
+
+      return false;
     },
 
     isBot: function(userId) {
@@ -171,10 +177,9 @@ module.exports = function(bot) {
     hasPermission: function(userId, checkRole) {
       if (checkRole == "All") {
         return true;
+      } else if (checkRole == "None") {
+        return false;
       }
-	  else if (checkRole == "None") {
-	    return false;
-	  }
 
       var user = bot.server.members.get(userId),
         roles = bot.server.roles.array();
@@ -359,4 +364,22 @@ module.exports = function(bot) {
       return arr.indexOf(elem) == pos;
     }
   }
+}
+
+if (!Date.now) {
+  Date.now = function() {
+    return new Date().getTime();
+  }
+}
+
+moment.createFromInputFallback = function(config) {
+  config._d = new Date(config._i);
+};
+
+String.prototype.lcFirst = function() {
+  return this.charAt(0).toLowerCase() + this.slice(1);
+}
+
+String.prototype.ucFirst = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
 }

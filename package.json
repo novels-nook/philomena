@@ -1,14 +1,13 @@
 {
   "name": "soulbot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "soulbot.js",
+  "version": "1.1.0",
+  "description": "A NodeJS Bot for Discord with a soul (or, at least, an approximation of one)",
+  "main": "app.js",
   "engines": {
-    "node": "6.1.0"
+    "node": "8.0.0"
   },
   "dependencies": {
     "chance": "^1.0.11",
-    "damn": "^0.1.0",
     "discord.js": "^11.0.0",
     "forever": "^0.15.3",
     "fs": "0.0.1-security",
@@ -25,9 +24,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "forever start ./soulbot.js",
-    "stop": "forever stop soulbot.js",
-    "restart": "forever restart soulbot.js",
+    "start": "forever start ./app.js",
+    "stop": "forever stop app.js",
+    "restart": "forever restart app.js",
     "beautify": "node ./beautify.js"
   },
   "author": "Kristen Trzonkowski",

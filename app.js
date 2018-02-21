@@ -11,14 +11,14 @@ memory.initSync();
 
 var SoulBot = new function() {
   this.client = new Discord.Client();
-  this.connected = false;
+  this.connected = false; // TODO: can this be done a better way?
   this.brain = brain;
   this.memory = memory;
   this.random = new chance();
   this.cache = [];
   this.commands = [];
   this.helpers = {};
-  this.pings = {};
+  this.pings = {}; // TODO - move to memory
   this.config = JSON.parse(fs.readFileSync("./config.json"));
 
   this.run = function() {
@@ -26,22 +26,22 @@ var SoulBot = new function() {
 
     bot.client.login(bot.config.clientId);
 
+    /**
+	 * EVENT : Ready
+	 * - Fired when the client is successfully connected to Discord.
+	 * Handles setup of available commands, helpers, and timers.
+	 */
     bot.client.on("ready", function() {
       console.log("Logged in as " + bot.client.user.username + " (" + bot.client.user.id + ")");
       console.log("No matter who I am logged in as, I am still SoulBot at heart.");
 
       if (bot.client.guilds.length == 0) {
         console.error("Please add me to a server first!");
-
         return false;
       }
 
       var servers = bot.client.guilds.array();
-
-      servers.sort(function (a, b) {
-        return a.joinedTimestamp - b.joinedTimestamp;
-	  });
-
+      servers.sort(function (a, b) { return a.joinedTimestamp - b.joinedTimestamp; });
       bot.server = servers.shift();
 
       if (servers.length > 0) {
@@ -50,7 +50,8 @@ var SoulBot = new function() {
         for (var i = 0, len = servers.length; i < len; i++) {
           console.log(" - " + servers[i].name);
         }
-      } else {
+      }
+	  else {
         console.log("I currently live in " + bot.server.name + ".");
       }
 
@@ -70,7 +71,8 @@ var SoulBot = new function() {
                 if (file.command) {
                   file.command.path = path;
                   bot.commands.push(file.command);
-                } else {
+                }
+				else {
                   console.error(path + ' does not have COMMAND information.');
                 }
                 break;
@@ -86,9 +88,11 @@ var SoulBot = new function() {
           bot.commands.sort(function(a, b) {
             if (a.priority && b.priority) {
               return a.priority > b.priority ? -1 : 1;
-            } else if (a.priority) {
+            }
+			else if (a.priority) {
               return -1;
-            } else {
+            }
+			else {
               return 1;
             }
           });
@@ -103,15 +107,26 @@ var SoulBot = new function() {
       }
     });
 
+    /*
+	 * EVENT : Disconnected
+	 * - Fired when 
+	 * Attempts to log back in when disconnected.
+	 */
     bot.client.on("disconnected", function(err) {
+	  // TODO: limit to x number of tries
       console.log("Disconnected.  Logging back in.");
       setTimeout(function() {
         bot.client.loginWithToken(bot.config.clientId);
       }, 5000);
     });
 
-    bot.client.on("guildMemberAdd", function(user) {
-      setTimeout(function() {
+    /*
+	 * EVENT : New Member
+	 * - Fired when someone new joins the server.
+	 * Depending on the configuration settings, SoulBot will greet new users.
+	 */
+    bot.client.on("guildMemberAdd", function (user) {
+      setTimeout(function () {
           if (bot.config.announceNewUsers) {
             bot.server.channels.find("name", bot.config.mainChat).send(bot.soul("configuration").newUser.messageServer.replace("{newUser}", user.toString()));
           }
@@ -119,13 +134,16 @@ var SoulBot = new function() {
           if (bot.config.greetNewUsersPersonally) {
             user.send(bot.soul("configuration").newUser.messageUser);
           }
-        },
-        2500
-      );
+      }, 2500);
     });
 
-    bot.client.on("message", function(message) {
-      if (!bot.helpers.isBot(message.author.id)) {
+    /*
+	 * EVENT : Message
+	 * - Fired when any message is sent to a server channel.
+	 * Handles responding to any recognized commands/triggers.
+	 */
+    bot.client.on("message", function (message) {
+      if (!bot.helpers.isBot(message.author.id)) { // Don't respond to yourself, silly bot!
         // Empty the cache
         for (var key in bot.cache) {
           delete bot.cache[key];
@@ -179,7 +197,8 @@ var SoulBot = new function() {
               } catch (e) {
                 match = false;
               }
-            } else {
+            }
+			else {
               args = message.cleanContent.split(prompt).pop().trim()
               match = message.cleanContent.match(prompt);
             }
@@ -187,7 +206,7 @@ var SoulBot = new function() {
             if (
               match && // is a match
               bot.helpers.isChannel(message.channel, command.channels) && // Correct channel
-              bot.helpers.hasPermission(message.author.id, command.role) && // Correct permission level
+              bot.helpers.memberHasRole(message.author.id, command.role) && // Correct permission level
               (
                 isMentioned || // Is mentioned OR
 				// Doesn't require mentioning and triggers likelihood check (default: always)
@@ -214,45 +233,3 @@ var SoulBot = new function() {
 }
 
 SoulBot.run();
-
-
-// move these or something idk
-function unique(elem, pos, arr) {
-  return arr.indexOf(elem) == pos;
-}
-
-if (!Date.now) {
-  Date.now = function() {
-    return new Date().getTime();
-  }
-}
-
-moment.createFromInputFallback = function(config) {
-  config._d = new Date(config._i);
-};
-
-String.prototype.lcFirst = function() {
-  return this.charAt(0).toLowerCase() + this.slice(1);
-}
-
-String.prototype.ucFirst = function() {
-  return this.charAt(0).toUpperCase() + this.slice(1);
-}
-
-String.prototype.ucEach = function() {
-  var str = this.split(' ');
-
-  for (var i = 0, len = str.length; i < len; i++) {
-    str[i] = str[i].ucFirst();
-  }
-
-  return str.join(' ');
-}
-
-String.prototype.decode = function() {
-  var str = this;
-
-  return str.replace(/&#(\d+);/g, function(match, dec) {
-    return String.fromCharCode(dec);
-  });
-}
