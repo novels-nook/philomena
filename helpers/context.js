@@ -25,7 +25,7 @@ module.exports = function(bot) {
     getContext: function(userId) {
       var context = bot.memory.getItemSync('context') || {};
 
-      if (context && context[userId] && context[userId].expires && context[userId].expires > moment().valueOf()) {
+      if (context[userId] && context[userId].expires && context[userId].expires > moment().valueOf()) {
         return context[userId];
       } else {
         return false;

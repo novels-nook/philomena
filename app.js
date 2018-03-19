@@ -142,6 +142,8 @@ var SoulBot = new function() {
      **/
     bot.client.on("message", function(message) {
       if (!bot.helpers.isBot(message.author.id)) { // Don't respond to yourself, silly bot!
+        var args;
+
         // Empty the cache
         for (var key in bot.cache) {
           delete bot.cache[key];
@@ -161,10 +163,10 @@ var SoulBot = new function() {
 
           if (context && !bot.helpers.containsKeyword(message.content, "!context")) {
             delete require.cache[require.resolve(context.command)];
-            theFunction = require(context.command);
+            let theFunction = require(context.command);
 
             if (bot.helpers.isChannel(message.channel, theFunction.command.channels)) {
-              var args = message.cleanContent.replace('@' + bot.client.user.username, '').trim();
+              args = message.cleanContent.replace('@' + bot.client.user.username, '').trim();
               theFunction.context = context;
               theFunction.execute(bot, args, message);
               return false;
@@ -178,7 +180,7 @@ var SoulBot = new function() {
           var command = bot.commands[c];
 
           for (var p = 0, plen = command.prompts.length; p < plen; p++) {
-            var prompt, args, match;
+            var prompt, match;
 
             if (command.prompts[p] instanceof RegExp) {
               prompt = command.prompts[p];
@@ -213,7 +215,7 @@ var SoulBot = new function() {
             ) {
               try {
                 delete require.cache[require.resolve(command.path)];
-                theFunction = require(command.path);
+                let theFunction = require(command.path);
                 theFunction.execute(bot, args, message);
               } catch (err) {
                 console.log(err);

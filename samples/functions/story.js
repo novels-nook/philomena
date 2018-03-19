@@ -49,11 +49,11 @@ module.exports = {
 
             lastUpdated = d.getDate() + ' ' + bot.helpers.months[d.getMonth()] + ' ' + d.getFullYear();
 
-            for (var i = 0, len = tags.length; i < len; i++) {
+            for (let i = 0, len = tags.length; i < len; i++) {
               tags[i] = tags[i].id;
             }
 
-            for (var i = 0, len = response.included.length; i < len; i++) {
+            for (let i = 0, len = response.included.length; i < len; i++) {
               if (response.included[i].type == "story_tag") {
                 if (tags.indexOf(response.included[i].id) >= 0) {
                   tagsOutput.push(response.included[i].attributes.name);

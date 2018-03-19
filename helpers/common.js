@@ -93,12 +93,10 @@ module.exports = function(bot) {
         headers: data.headers || {}
       };
 
-      switch (options.method) {
-        case 'GET':
-          options.qs = data.data || {};
-          break;
-        default:
-          options.form = data.data || {};
+      if (options.method == "GET") {
+        options.qs = data.data || {};
+      } else {
+        options.form = data.data || {};
       }
 
       request(options, function(error, response, data) {
@@ -305,12 +303,11 @@ module.exports = function(bot) {
     getArticle: function(object) {
       object = object.toLowerCase();
 
-      switch (object) {
-        case "unicorn":
-          return "a";
-        default:
-          return ["a", "e", "i", "o", "u"].indexOf(object[0]) >= 0 ? "an" : "a";
+      if (object == "unicorn") {
+        return "a";
       }
+
+      return ["a", "e", "i", "o", "u"].indexOf(object[0]) >= 0 ? "an" : "a";
     },
 
     getPronoun: function(gender) {
@@ -326,10 +323,12 @@ module.exports = function(bot) {
     },
 
     timeString: function(dir, date) {
+      var seconds;
+
       if (dir == "since") {
-        var seconds = Math.floor((new Date() - date) / 1000);
+        seconds = Math.floor((new Date() - date) / 1000);
       } else {
-        var seconds = Math.floor((date - new Date()) / 1000);
+        seconds = Math.floor((date - new Date()) / 1000);
       }
 
       var interval = Math.ceil(seconds / 31536000);

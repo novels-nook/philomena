@@ -15,7 +15,7 @@ module.exports = {
     var output = "";
 
     if (args) {
-      for (var c = 0, clen = bot.commands.length; c < clen; c++) {
+      for (let c = 0, clen = bot.commands.length; c < clen; c++) {
         if (args.containsKeyword(bot.commands[c].prompts)) {
           if (bot.helpers.hasPermission(message.author.id, bot.commands[c].role)) {
             output += bot.commands[c].name + " — " + bot.commands[c].desc;
@@ -33,7 +33,7 @@ module.exports = {
       message.author.send("Here is my current list of commands!").then(function() {
         var commands = {};
 
-        for (var c = 0, clen = bot.commands.length; c < clen; c++) {
+        for (let c = 0, clen = bot.commands.length; c < clen; c++) {
           if (bot.helpers.hasPermission(message.author.id, bot.commands[c].role) && bot.commands[c].group) {
             if (!commands[bot.commands[c].group]) {
               commands[bot.commands[c].group] = [];
@@ -46,7 +46,7 @@ module.exports = {
         for (var group in commands) {
           var output = "**" + group + "**```\r\n";
 
-          for (var c = 0, clen = commands[group].length; c < clen; c++) {
+          for (let c = 0, clen = commands[group].length; c < clen; c++) {
             output += commands[group][c].name + " — " + commands[group][c].desc + "\r\n";
           }
 
