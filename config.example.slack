@@ -1,0 +1,5 @@
+{
+  "connector" : "slack",
+  "appToken"  : "xoxp-uuid",
+  "botToken"  : "xoxb-uuid"
+}

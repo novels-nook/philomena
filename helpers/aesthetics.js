@@ -3,7 +3,7 @@ module.exports = function(bot) {
     numbersToEmoji: function(numbers, maxLength = 1) {
       numbers = String(numbers).padStart(maxLength, 0).split('');
 
-      for (var i = 0, len = numbers.length; i < len; i++) {
+      for (let i = 0, len = numbers.length; i < len; i++) {
         switch (numbers[i]) {
           case '0':
             numbers[i] = ':zero:';

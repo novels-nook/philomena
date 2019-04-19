@@ -1,0 +1,13 @@
+{
+  "connector" : "local",
+  "mockData" : {
+    "user"      : {
+      "id" : 123,
+      "name" : "you",
+      "displayname" : "Hey You"
+    },
+    "channel" : {
+      "id" : 321
+    }
+  }
+}

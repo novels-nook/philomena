@@ -1,32 +1,32 @@
 {
   "name": "soulbot",
-  "version": "1.1.0",
-  "description": "A NodeJS Bot for Discord with a soul (or, at least, an approximation of one)",
-  "main": "app.js",
+  "version": "3.0.0",
+  "description": "A NodeJS Bot for Discord and Slack with a soul (or, at least, an approximation of one)",
+  "main": "bot.js",
   "engines": {
-    "node": "8.0.0"
+    "node": ">=9.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ktrzonkowski/soulbot"
   },
   "dependencies": {
-    "chance": "^1.0.11",
-    "discord.js": "^11.0.0",
-    "forever": "^0.15.3",
+    "@slack/client": "^4.8.0",
+    "brain.js": "^1.6.1",
+    "chance": "^1.0.18",
+    "discord.js": "^11.4.2",
     "fs": "0.0.1-security",
-    "glob": "^7.1.2",
-    "js-beautify": "^1.7.4",
-    "moment-timezone": "^0.5.13",
-    "natural": "^0.5.4",
+    "glob": "^7.1.3",
+    "js-beautify": "^1.8.9",
+    "moment-timezone": "^0.5.23",
     "node-emoji": "^1.8.1",
-    "node-persist": "^2.1.0",
-    "node-trello": "^1.3.0",
+    "node-persist": "3.0.2",
     "numeral": "^2.0.6",
-    "request": "^2.83.0",
-    "sentiment": "^4.1.0"
+    "request": "^2.88.0",
+    "sbd": "^1.0.14"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "forever start ./app.js",
-    "stop": "forever stop app.js",
-    "restart": "forever restart app.js",
     "beautify": "node ./beautify.js"
   },
   "author": "Kristen Trzonkowski",

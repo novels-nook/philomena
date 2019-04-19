@@ -1,0 +1,4 @@
+{
+  "connector" : "discord",
+  "botToken"  : "Found on https://discordapp.com/developers/applications/<YOUR_APP_ID>/bots"
+}
