@@ -14,7 +14,8 @@ module.exports = function (bot) {
                   sender: member,
                   channel: channel,
                   content: msg.content,
-                  timestamp: Date.now()
+                  timestamp: Date.now(),
+                  originalEvent: msg
                 });
               }
             }
@@ -30,7 +31,8 @@ module.exports = function (bot) {
                   sender: member,
                   channel: channel,
                   content: msg.text,
-                  timestamp: msg.ts
+                  timestamp: msg.ts,
+                  originalEvent: msg
                 });
               }
             }
@@ -45,7 +47,8 @@ module.exports = function (bot) {
               sender: member,
               channel: channel,
               content: msg,
-              timestamp: ''
+              timestamp: '',
+              originalEvent: msg
             });
 
             break;
