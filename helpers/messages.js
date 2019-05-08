@@ -60,38 +60,42 @@ module.exports = function (bot) {
 
     /* Send a message. */
     sendMessage : function (target, content, args = {}) {
-      bot.checkObject(target, { id : '' }, (err) => {
-        if (err) {
-          throw err;
-        }
-
-        args.sendMessage = true;
-
-        bot.emit('sendingMessage', bot, { target : target, content : content, args : args });
-
-        if (args.sendMessage) {
-          switch (bot.config.connector) {
-            case 'discord':
-              target.ref.send(content);
-              break;
-            case 'slack':
-              bot.client.sendMessage(
-                content,
-                target.id
-              );
-
-              break;
-            case 'local':
-              console.log(content);
-
-              bot.client.question('> ', (response) => {
-                bot.messageReceived(response).then( (msg) => {
-                  bot.emit('messageReceived', this, msg);
-                });
-              });
-              break;
+      return new Promise( (resolve, reject) => {
+        bot.checkObject(target, { id : '' }, (err) => {
+          if (err) {
+            throw err;
           }
-        }
+
+          args.sendMessage = true;
+
+          bot.emit('sendingMessage', bot, { target : target, content : content, args : args });
+
+          if (args.sendMessage) {
+            switch (bot.config.connector) {
+              case 'discord':
+                target.ref.send(content);
+                break;
+              case 'slack':
+                bot.client.sendMessage(
+                  content,
+                  target.id
+                ).then( (result) => {
+                  resolve(result);
+                });
+
+                break;
+              case 'local':
+                console.log(content);
+
+                bot.client.question('> ', (response) => {
+                  bot.messageReceived(response).then( (msg) => {
+                    bot.emit('messageReceived', this, msg);
+                  });
+                });
+                break;
+            }
+          }
+        });
       });
     }
   }
