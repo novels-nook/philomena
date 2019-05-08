@@ -113,7 +113,9 @@ class SoulBot extends EventEmitter {
 
         this.client.on('message', (response) => {
           this.messageReceived(response).then( (msg) => {
-            this.emit('messageReceived', this, msg);
+            if (msg) {
+              this.emit('messageReceived', this, msg);
+            }
           });
         });
 
