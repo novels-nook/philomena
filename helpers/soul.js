@@ -3,6 +3,10 @@ module.exports = function (bot) {
     Soul : class Soul {
       constructor () {
         bot.on('messageReceived', (bot, msg) => {
+          if (['message_replied'].includes(msg.originalEvent.subtype)) {
+            return false; 
+          }
+          
           let {commands} = bot;
 
           var foundCommand = false;
