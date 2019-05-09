@@ -21,7 +21,7 @@ module.exports = function (bot) {
             }
             break;
           case 'slack':
-            if (msg.type == "message" && msg.subtype != "bot_message") {
+            if (msg.type == "message" && !msg.subtype) {
               let member = await bot.fetchMemberBy('id', msg.user);
 
               let channel = await bot.fetchChannelBy('id', msg.channel);
