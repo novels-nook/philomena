@@ -76,10 +76,10 @@ module.exports = function (bot) {
                 target.ref.send(content);
                 break;
               case 'slack':
-                bot.client.sendMessage(
-                  content,
-                  target.id
-                ).then( (result) => {
+                bot.client.webClient.chat.postMessage({
+                  channel: target.id,
+                  text: content
+                }).then( (result) => {
                   resolve(result);
                 });
 
