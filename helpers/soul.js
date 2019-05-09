@@ -15,6 +15,10 @@ module.exports = function (bot) {
             if (command.members && command.members.indexOf(msg.sender.id) == -1) {
               continue;
             }
+            
+            if (!command.prompts) {
+              continue;
+            }
 
             for (let prompt of command.prompts) {
               if (!(prompt instanceof RegExp)) {
