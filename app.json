@@ -1,0 +1,14 @@
+{
+  "name": "philomena",
+  "description": "Philomena, the chat bot",
+  "scripts": {},
+  "env": {},
+  "formation": {},
+  "addons": [],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "stack": "heroku-18"
+}
