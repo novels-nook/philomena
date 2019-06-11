@@ -16,7 +16,7 @@ module.exports = {
     var storyId = 0,
       keywords = {
         'habits': 365518,
-        'diamonds stars': 365518,
+        'diamonds': 365518,
         'prerogative': 380656,
         'alchemy': 352029
       };
@@ -32,7 +32,7 @@ module.exports = {
         url: "https://www.fimfiction.net/api/v2/stories?sort=-relevance&" + (storyId != 0 ? 'filter[ids]=' + storyId : 'query=' + args),
         headers: {
           "User-Agent": "PhilomenaBOT/1.2",
-          "Authorization": "Bearer " + "X2DMOQd4GVwep9kMIQkjLt0iTThEuFjN",
+          "Authorization": "Bearer " + process.env.FIMFIC_BEARER_TOKEN,
         }
       }, function(response) {
         if (!response.data || response.data.length == 0) {

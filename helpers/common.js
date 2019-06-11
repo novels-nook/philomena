@@ -16,9 +16,13 @@ module.exports = function(bot) {
           responseList = responseList.concat(bot.soul('userResponses')[message.author.id]);
         }
 
-        for (var group in bot.soul('groupResponses')) {
-          if (bot.helpers.memberHasRole(message.author.id, group)) {
-            responseList = responseList.concat(bot.soul('groupResponses')[group]);
+        if (responseList.length == 0) { // Allows for userResponses to override groupResponses
+          for (var group in bot.soul('groupResponses')) {
+            if (bot.helpers.memberHasRole(message.author.id, group)) {
+              responseList = responseList.concat(bot.soul('groupResponses')[group]);
+              break; // Makes groupResponses SPECIFIC by returning only ONE list
+              // priority matched by list in groupResponses.json
+            }
           }
         }
 
@@ -156,11 +160,14 @@ module.exports = function(bot) {
       }
 
       for (var i = 0, len = checkRole.length; i < len; i++) {
+        if (checkRole[i] == "All") {
+          return true;
+        }
         var role = bot.server.roles.find('name', checkRole[i]);
 
         if (!role) {
           continue;
-        } else if (bot.server.members.get(userId).roles.get(role.id) !== undefined || bot.server.members.get(userId).roles.get(checkRole[i]) !== undefined) {
+        } else if (bot.server.members.get(userId).roles.get(role.id) !== undefined) {
           return true;
         }
       }
