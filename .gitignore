@@ -1,7 +1,4 @@
 **/no-git
-/functions/*
-/timers/*
-/soul/*
 /logs/*
 /node_modules
 npm-debug.log

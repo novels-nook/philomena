@@ -6,7 +6,7 @@ var Discord = require('discord.js'),
   memory = require('node-persist'),
   chance = require('chance');
 
-moment.tz.setDefault("America/New_York");
+moment.tz.setDefault("America/Los_Angeles");
 memory.initSync();
 
 var SoulBot = new function() {
@@ -61,6 +61,7 @@ var SoulBot = new function() {
 
         glob('./+(helpers|functions|timers)/**/*.js', function(err, files) {
           for (var i = 0, len = files.length; i < len; i++) {
+            //console.log(files[i]);
             var path = files[i],
               file = require(path),
               folder = files[i].split('/');
@@ -94,6 +95,8 @@ var SoulBot = new function() {
               return 1;
             }
           });
+
+          //console.log(bot.commands);
 
           // Shortcut the data & soul helpers function
           bot.data = bot.helpers.data;
@@ -179,6 +182,7 @@ var SoulBot = new function() {
         for (var c = 0, clen = bot.commands.length; c < clen; c++) {
           var command = bot.commands[c];
 
+
           for (var p = 0, plen = command.prompts.length; p < plen; p++) {
             var prompt, match;
 
@@ -201,10 +205,19 @@ var SoulBot = new function() {
               match = message.cleanContent.match(prompt);
             }
 
+            if (match) {
+              //console.log("command " + command.name + " match " + match + " args " + args);
+              //console.log("1 - " + bot.helpers.isChannel(message.channel, command.channels));
+              //console.log("2 - " + bot.helpers.memberHasRole(message.author.id, command.role));
+            }
+
             if (
               match && // is a match
               bot.helpers.isChannel(message.channel, command.channels) && // Correct channel
-              bot.helpers.memberHasRole(message.author.id, command.role) && // Correct permission level
+              (
+                bot.config.admin.includes(message.author.id) || // if admin shortcircuit role check
+                bot.helpers.memberHasRole(message.author.id, command.role)
+              ) && // Correct permission level
               (
                 isMentioned || // Is mentioned OR
                 // Doesn't require mentioning and triggers likelihood check (default: always)
@@ -217,6 +230,7 @@ var SoulBot = new function() {
                 delete require.cache[require.resolve(command.path)];
                 let theFunction = require(command.path);
                 theFunction.execute(bot, args, message);
+                //console.log("boop");
               } catch (err) {
                 console.log(err);
               }

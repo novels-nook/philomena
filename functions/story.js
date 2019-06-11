@@ -16,7 +16,7 @@ module.exports = {
     var storyId = 0,
       keywords = {
         'habits': 365518,
-        'diamonds stars': 365518,
+        'diamonds': 365518,
         'prerogative': 380656,
         'alchemy': 352029
       };
