@@ -1,0 +1,29 @@
+console.log("");
+
+if () {}
+
+treat - needs a treatresponses.json in soul folder
+roll - works
+emoiji - technically works but the response of all the emoji available is larger than the 2000char max for discord bots
+echo - it's setup so that only moderators in the 'mod tools' group can use it
+google - it's setup so that only 'cadets' in the 'general' group can use it
+commands - works
+deviantart - works
+story - you need a fimfiction access key to stick in your config.json
+
+
+JYKINTURAH'S NOTES
+==================
+Philomena should be running under a pm2 process. 
+To see her, open a cmd.exe and type:
+   pm2 list
+
+And you should see here there. You can restart her by doing:
+   pm2 restart philomena
+
+Also to start her if she somehow stops working or showing up in pm2 list, 
+go to the github directory in cmd.exe and type:
+   pm2 start app.js -name "philomena"
+
+To stop her just do:
+   pm2 stop philomena

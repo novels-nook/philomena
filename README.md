@@ -1,4 +1,4 @@
-# SoulBOT — A Discord Bot with a Soul!
+# Philomena (Based on SoulBot!) — A Discord Bot with a Soul!
 
 Welcome to the work in progress that is SoulBOT, a NodeJS bot utilization the Discord.JS library.  The main feature of SoulBOT is its soul, which allows you to give your bot a personality.  Will yours be friendly?  Snarky?  Shy?  The possibilities are as endless as your imagination!
 
@@ -15,7 +15,7 @@ After getting node and npm on your server, you'll want to download or clone the 
 - Copy `config.json` from the `samples/data` folder to the root folder and:
   - Update the `clientId` with the Token from your bot's page
   - *Optional but Recommended*: Update the `mainChat` with the name of your "main" chatroom (e.g. general)
-- Run `npm start` and you should be good to go!
+- Run `node app.js` and you should be good to go!
 
 ## Warning
 
