@@ -1,6 +1,16 @@
 {
   "name": "philomena",
-  "scripts": {},
+  "scripts": {
+  
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
   "env": {
     "ADMIN_IDS": {
       "required": true
@@ -23,11 +33,5 @@
       "quantity": 1
     }
   },
-  "addons": [],
-  "buildpacks": [
-    {
-      "url": "heroku/nodejs"
-    }
-  ],
   "stack": "heroku-18"
 }
