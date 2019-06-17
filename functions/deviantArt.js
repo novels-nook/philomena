@@ -9,7 +9,7 @@ module.exports = {
     "noMention": true,
     "noMentionLikelihood": 100,
     "prompts": [
-      "(http(s)?:\/\/.*deviantart.com\/art\/[^ ]+)"
+      "(http(|s):\/\/(www|[a-zA-Z0-9\-\_]+)\.deviantart.com(|\/[a-zA-Z0-9\-\_]+)\/art\/[a-zA-Z0-9\-\_]+)"
     ],
     "role": "All",
     "channels": [
@@ -22,7 +22,7 @@ module.exports = {
 
     bot.helpers.getMETA(link[0], function(meta) {
       var responseList = [
-        "*Somepony get Novel to fix this! I'm tired of doing all the work around here!*",
+        // "*Somepony get Novel to fix this! I'm tired of doing all the work around here!*",
         "*Silly filly, here's the right link!*",
         "*Needs more phoenix.*",
         "*Asanda warned me this might happen, but I didn't listen.*",
@@ -30,7 +30,7 @@ module.exports = {
         "*You're sure about this one? Well, okay.*",
         "*Oh yeah, this one! Faerana wouldn't stop singing about this pic.*",
         "*Yay! Something to do! Celestia had me on timeout after I burned Blueblood's mane off... again.*",
-        "*No matter what's in this picture, I'm hotter. Comes with being a phoenix.*",
+        // "*No matter what's in this picture, I'm hotter. Comes with being a phoenix.*",
         "*Hey, don't blame me! You're the one who picked it!*",
         "*Hmm... not bad. Not bad at all.*"
       ];

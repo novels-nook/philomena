@@ -1,4 +1,8 @@
 {
+  "name": "philomena",
+  "scripts": {
+  
+  },
   "addons": [
 
   ],
@@ -28,9 +32,6 @@
     "web": {
       "quantity": 1
     }
-  },
-  "name": "philomena",
-  "scripts": {
   },
   "stack": "heroku-18"
 }
