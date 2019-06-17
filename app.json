@@ -1,0 +1,36 @@
+{
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "ADMIN_IDS": {
+      "required": true
+    },
+    "CLIENT_ID": {
+      "required": true
+    },
+    "FIMFIC_BEARER_TOKEN": {
+      "required": true
+    },
+    "MAIN_CHAT": {
+      "required": true
+    }
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1
+    },
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "philomena",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
