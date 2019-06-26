@@ -4,7 +4,7 @@
   "description": "A NodeJS Bot for Discord with a soul (or, at least, an approximation of one)",
   "main": "app.js",
   "engines": {
-    "node": "8.0.0"
+    "node": "8.x"
   },
   "dependencies": {
     "chance": "^1.0.13",
