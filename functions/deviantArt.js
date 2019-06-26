@@ -35,7 +35,22 @@ module.exports = {
         "*Hmm... not bad. Not bad at all.*"
       ];
 
-      message.reply(chance.pickone(responseList) + " " + meta.image);
+      // Old reply puts entire link into message
+      // message.reply(chance.pickone(responseList) + " " + meta.image);
+
+      /* New reply puts image url into a discord embed object which allows hiding the link
+         in a nicer looking box. Documentation linked below:
+         https://discordjs.guide/popular-topics/embeds.html#using-an-embed-object
+       */
+
+      message.reply(chance.pickone(responseList), 
+        { embed: {
+          title: meta.title,
+          url: meta.url,
+          description: meta.description,
+          image: { url: meta.image }
+        }
+      });
     });
   }
 }
